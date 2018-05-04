@@ -1,13 +1,35 @@
 <template>
   <div id="app">
-    <img src="./assets/logo.png">
-    <router-view/>
+    <v-app>
+      <v-toolbar app>
+        <span class="title ml-3 mr-5">Crypto Invoice</span>
+        <v-spacer></v-spacer>
+        <v-toolbar-items class="hidden-sm-and-down" v-for="item in navItems" :key="item.title">
+          <v-btn flat :to="item.path">{{item.title}}</v-btn>
+        </v-toolbar-items>
+      </v-toolbar>
+      <v-content>
+        <img src="./assets/logo.png">
+        <router-view/>
+      </v-content>
+    </v-app>
   </div>
 </template>
 
 <script>
 export default {
-  name: 'App'
+  name: 'App',
+  data: () => ({
+    navItems: [
+      { title: 'Account Settings', icon: 'account-settings-variant', path: 'AccountSettings' },
+      { title: 'Payment Status', icon: 'currency-btc', path: 'PaymentStatus' },
+      { title: 'Payment Request', icon: 'currency-btc', path: 'PaymentRequest' }
+    ],
+    methods: {
+      menuClick: function (params) {
+      }
+    }
+  })
 }
 </script>
 
