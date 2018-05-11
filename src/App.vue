@@ -9,7 +9,7 @@
         </v-toolbar-items>
       </v-toolbar>
       <v-content>
-        <img src="./assets/logo.png">
+        <!--<img src="./assets/logo.png">-->
         <router-view/>
       </v-content>
     </v-app>

@@ -4,10 +4,12 @@ import Vue from 'vue';
 import App from './App';
 import router from './router';
 import Vuetify from 'vuetify';
+import VueCookie from 'vue-cookie';
 import 'vuetify/dist/vuetify.min.css';
 import 'material-design-icons-iconfont/dist/material-design-icons.css';
 
 Vue.use(Vuetify);
+Vue.use(VueCookie);
 Vue.config.productionTip = false;
 
 /* eslint-disable no-new */
