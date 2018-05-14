@@ -85,11 +85,23 @@
         <v-flex xs12 sm6 offset-sm3>
           <v-btn
             class="primary"
+            ref="saveBtn"
             :disabled="!valid || !loaded"
             @click="submit">Save Changes</v-btn>
         </v-flex>
       </v-layout>
     </v-form>
+    <v-layout row justify-center>
+      <v-dialog v-model="savedDialog" max-width="290">
+        <v-card>
+          <v-card-title class="headline">Changes Saved!</v-card-title>
+          <v-card-actions>
+            <v-spacer></v-spacer>
+            <v-btn flat="flat" @click.native="savedDialog = false">Close</v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
+    </v-layout>
   </v-container>
 </template>
 <script>
@@ -100,6 +112,7 @@ export default {
     return {
       valid: true,
       loaded: false,
+      savedDialog: false,
       btcxpub: '',
       ltcxpub: '',
       ethAccount: '',
@@ -120,6 +133,11 @@ export default {
         v => (v === '' || v.length === 64) || 'Invalid view key Format'
       ]
     };
+  },
+  computed: {
+    counter () {
+      return this.$store.getters.counter;
+    }
   },
   created () {
     // static user id for testing in MVP
@@ -157,6 +175,8 @@ export default {
           xmrPublicViewKey: this.xmrPublicViewKey
         }, {
           withCredentials: true
+        }).then(() => {
+          this.savedDialog = true;
         }).catch(function (error) {
           console.log(error);
         });
