@@ -16,7 +16,7 @@
             label="BTC XPUB"
             id="btcxpub"
             :rules="xpubRules"
-            v-model="btcxpub"
+            v-model="userSettings.btcxpub"
             :disabled="!loaded">
           </v-text-field>
         </v-flex>
@@ -28,7 +28,7 @@
             label="LTC XPUB"
             id="ltcxpub"
             :rules="xpubRules"
-            v-model="ltcxpub"
+            v-model="userSettings.ltcxpub"
             :disabled="!loaded">
           </v-text-field>
         </v-flex>
@@ -40,7 +40,7 @@
             label="ETH Account"
             id="ethaccount"
             :rules="ethRules"
-            v-model="ethAccount"
+            v-model="userSettings.ethAccount"
             :disabled="!loaded">
           </v-text-field>
         </v-flex>
@@ -52,7 +52,7 @@
             label="XMR Address"
             id="xmraddress"
             :rules="xmrAddRules"
-            v-model="xmrAddress"
+            v-model="userSettings.xmrAddress"
             :disabled="!loaded">
           </v-text-field>
         </v-flex>
@@ -63,7 +63,7 @@
             name="xmrprivateviewkey"
             label="XMR Private View Key"
             id="xmrprivateviewkey"
-            v-model="xmrPrivateViewKey"
+            v-model="userSettings.xmrPrivateViewKey"
             :rules="xmrViewKeyRules"
             :disabled="!loaded">
           </v-text-field>
@@ -75,7 +75,7 @@
             name="xmrpublicviewkey"
             label="XMR Public View Key"
             id="xmrpublicviewkey"
-            v-model="xmrPublicViewKey"
+            v-model="userSettings.xmrPublicViewKey"
             :rules="xmrViewKeyRules"
             :disabled="!loaded">
           </v-text-field>
@@ -105,7 +105,6 @@
   </v-container>
 </template>
 <script>
-import axios from 'axios';
 export default {
   name: 'AccountSettingsPage',
   data () {
@@ -113,12 +112,7 @@ export default {
       valid: true,
       loaded: false,
       savedDialog: false,
-      btcxpub: '',
-      ltcxpub: '',
-      ethAccount: '',
-      xmrAddress: '',
-      xmrPrivateViewKey: '',
-      xmrPublicViewKey: '',
+      userSettings: {},
       xpubRules: [
         v => (v === '' || (v.length === 111 && v.startsWith('xpub'))) || 'Invalid XPUB format'
       ],
@@ -134,52 +128,15 @@ export default {
       ]
     };
   },
-  computed: {
-    counter () {
-      return this.$store.getters.counter;
-    }
-  },
   created () {
-    // static user id for testing in MVP
-    // get session id
-    axios.get('http://localhost:56442/api/user-settings/ef2d3969-cbc8-4480-86bf-949b930a0f5c', {
-      withCredentials: true,
-      headers: {
-        // Cookie: 'ASP.NET_SessionId=knjzggix3t1z03o3zg4okzhb'
-        // 'Content-Type': 'application/x-www-form-urlencoded',
-        // 'Accept': 'application/json'
-      }
-    }).then((response) => {
-      this.loaded = true;
-      var data = response.data;
-      this.btcxpub = data.btcxpub;
-      this.ltcxpub = data.ltcxpub;
-      this.ethAccount = data.ethAccount;
-      this.xmrAddress = data.xmrAddress;
-      this.xmrPrivateViewKey = data.xmrPrivateViewKey;
-      this.xmrPublicViewKey = data.xmrPublicViewKey;
-    }).catch(function (error) {
-      console.log(error);
-    });
+    this.userSettings = this.$store.getters.userSettings;
+    this.loaded = true;
   },
+  computed: {},
   methods: {
     submit () {
       if (this.$refs.form.validate()) {
-        // send if the form is valid
-        axios.put('http://localhost:56442/api/user-settings/ef2d3969-cbc8-4480-86bf-949b930a0f5c', {
-          btcxpub: this.btcxpub,
-          ltcxpub: this.ltcxpub,
-          ethAccount: this.ethAccount,
-          xmrAddress: this.xmrAddress,
-          xmrPrivateViewKey: this.xmrPrivateViewKey,
-          xmrPublicViewKey: this.xmrPublicViewKey
-        }, {
-          withCredentials: true
-        }).then(() => {
-          this.savedDialog = true;
-        }).catch(function (error) {
-          console.log(error);
-        });
+        this.$store.dispatch('setUserSettingsAction', this.userSettings);
       }
     }
   }

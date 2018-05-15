@@ -1,13 +1,15 @@
-import Vue from 'vue'
-import Router from 'vue-router'
+import Vue from 'vue';
+import Router from 'vue-router';
 // import HelloWorld from '@/components/HelloWorld'
-import AccountSettingsPage from '@/components/AccountSettingsPage'
-import PaymentRequestPage from '@/components/PaymentRequestPage'
-import PaymentStatusPage from '@/components/PaymentStatusPage'
+import AccountSettingsPage from '@/components/AccountSettingsPage';
+import PaymentRequestPage from '@/components/PaymentRequestPage';
+import PaymentStatusPage from '@/components/PaymentStatusPage';
+import DashboardPage from '@/components/Dashboard';
 
-Vue.use(Router)
+Vue.use(Router);
 
 export default new Router({
+  mode: 'history',
   routes: [
     {
       path: '/',
@@ -24,6 +26,11 @@ export default new Router({
       path: '/AccountSettings',
       name: 'AccountSettingsPage',
       component: AccountSettingsPage
+    },
+    {
+      path: '/Dashboard',
+      name: 'Dashboard',
+      component: DashboardPage
     }
   ]
-})
+});
