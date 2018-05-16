@@ -26,13 +26,14 @@ export default new Vuex.Store({
   mutations: {
     addInvoice: (state, payload) => {
       // get user's invoices from the WebAPI
-      var invoice = {
+      // TODO: define structure here or accept it from WebAPI?
+      /* var invoice = {
         id: payload.id,
         name: payload.name,
         dateCreated: payload.dateCreated,
-        status: payload.status
-      }
-      state.invoices.unshift(invoice);
+        state: payload.state
+      } */
+      state.invoices.unshift(payload);
     },
     setUserId: (state, payload) => {
       state.userId = payload
@@ -60,7 +61,6 @@ export default new Vuex.Store({
       commit('setDisplayName', payload);
     },
     setUserSettingsAction: ({ commit, state }, payload) => {
-      commit('setUserSettings', payload);
       axios.put('http://localhost:56442/api/user-settings/' + state.userId, {
         btcxpub: payload.btcxpub,
         ltcxpub: payload.ltcxpub,
@@ -70,8 +70,10 @@ export default new Vuex.Store({
         xmrPublicViewKey: payload.xmrPublicViewKey
       }, {
         withCredentials: true
+      }).then(() => {
+        commit('setUserSettings', payload);
       }).catch(function (error) {
-        console.log(error);
+        console.error(error);
       });
     }
   }

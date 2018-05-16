@@ -29,7 +29,7 @@ new Vue({
       data.invoiceList.forEach(element => {
         this.$store.dispatch('addInvoiceAction', element);
       });
-      // TODO: load user settings here
+      // load user settings here
       axios.get('http://localhost:56442/api/user-settings/' + this.$store.getters.userId, {
         withCredentials: true
       }).then((response) => {

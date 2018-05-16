@@ -5,6 +5,7 @@ import AccountSettingsPage from '@/components/AccountSettingsPage';
 import PaymentRequestPage from '@/components/PaymentRequestPage';
 import PaymentStatusPage from '@/components/PaymentStatusPage';
 import DashboardPage from '@/components/Dashboard';
+import InvoicePage from '@/components/Invoice'
 
 Vue.use(Router);
 
@@ -13,24 +14,31 @@ export default new Router({
   routes: [
     {
       path: '/',
-      name: 'PaymentStatusPage',
-      component: PaymentStatusPage,
-      alias: '/PaymentStatus'
+      name: 'Dashboard',
+      component: DashboardPage,
+      alias: '/dashboard'
     },
     {
-      path: '/PaymentRequest',
+      path: '/paymentrequest',
       name: 'PaymentRequestPage',
       component: PaymentRequestPage
     },
     {
-      path: '/AccountSettings',
+      path: '/paymentstatus',
+      name: 'PaymentStatusPage',
+      component: PaymentStatusPage
+    },
+    {
+      path: '/accountsettings',
       name: 'AccountSettingsPage',
       component: AccountSettingsPage
     },
     {
-      path: '/Dashboard',
-      name: 'Dashboard',
-      component: DashboardPage
+      path: '/invoice/:id',
+      name: 'InvoicePage',
+      component: InvoicePage,
+      props: true
     }
+
   ]
 });

@@ -21,10 +21,10 @@ export default {
   name: 'App',
   data: () => ({
     navItems: [
-      { title: 'Account Settings', icon: 'account-settings-variant', path: 'AccountSettings' },
-      { title: 'Payment Status', icon: 'currency-btc', path: 'PaymentStatus' },
-      { title: 'Payment Request', icon: 'currency-btc', path: 'PaymentRequest' },
-      { title: 'Dashboard', path: 'Dashboard' }
+      { title: 'Account Settings', icon: 'account-settings-variant', path: '/accountsettings' },
+      { title: 'Payment Status', icon: 'currency-btc', path: '/paymentstatus' },
+      { title: 'Payment Request', icon: 'currency-btc', path: '/paymentrequest' },
+      { title: 'Dashboard', path: '/dashboard' }
     ],
     methods: {
       menuClick: function (params) {
