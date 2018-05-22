@@ -2,7 +2,11 @@
   <v-container>
     <v-layout row>
       <v-flex xs12 sm6 offset-sm3>
-        <h1>Dashboard</h1>
+        <v-card class="mb-2">
+          <v-card-text>
+            <h1>Invoices</h1>
+          </v-card-text>
+        </v-card>
       </v-flex>
     </v-layout>
     <v-layout row>
@@ -15,7 +19,7 @@
         >
           <template slot="items" slot-scope="props">
             <td class="text-xs-left">{{ props.item.name }}</td>
-            <td class="text-xs-right">{{ props.item.state }}</td>
+            <td class="text-xs-left">{{ invoiceState(props.item.state) }}</td>
             <td class="text-xs-right">{{ props.item.dateCreated }}</td>
             <td class="justify-center layout px-0">
               <v-btn icon class="mx-0" @click="viewInvoice(props.item)">
@@ -36,13 +40,14 @@
 </template>
 
 <script>
+import utils from '@/utils.js'
 export default {
   name: 'Dashboard',
   data () {
     return {
       headers: [
         {text: 'Name', value: 'name', align: 'left'},
-        {text: 'Status', value: 'status', width: '30px'},
+        {text: 'Status', value: 'status', width: '200px'},
         {text: 'Date Created', value: 'dateCreated', width: '120px'},
         {text: 'Actions', sortable: false, width: '60px'}
       ]
@@ -67,6 +72,9 @@ export default {
     },
     viewInvoice (item) {
       this.$router.push({name: 'InvoicePage', params: {id: item.id}});
+    },
+    invoiceState (state) {
+      return utils.paymentStates[state];
     }
   }
 };
@@ -74,7 +82,4 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-  .dataTable{
-    max-width: 1000px;
-  }
 </style>

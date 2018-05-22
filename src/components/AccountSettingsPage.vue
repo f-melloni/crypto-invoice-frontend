@@ -3,14 +3,16 @@
     <div class="loading" v-if="!loaded">
       <v-progress-circular :size="50" indeterminate color="primary"></v-progress-circular>
     </div>
-    <v-layout row>
-      <v-flex xs12 sm6 offset-sm3>
-        <h1>Account Settings</h1>
-      </v-flex>
-    </v-layout>
-    <v-form ref="form" v-model="valid">
-      <v-layout row>
-        <v-flex xs12 sm6 offset-sm3>
+    <v-layout justify-center>
+      <v-flex xs12 sm10 md8 lg6>
+      <v-card>
+        <v-form ref="form" v-model="valid">
+        <v-card-title>
+          <v-flex justify-center>
+            <h2>Account Settings</h2>
+          </v-flex>
+        </v-card-title>
+        <v-card-text>
           <v-text-field
             name="btcxpub"
             label="BTC XPUB"
@@ -19,10 +21,6 @@
             v-model="userSettings.btcxpub"
             :disabled="!loaded">
           </v-text-field>
-        </v-flex>
-      </v-layout>
-      <v-layout row>
-        <v-flex xs12 sm6 offset-sm3>
           <v-text-field
             name="ltcxpub"
             label="LTC XPUB"
@@ -31,10 +29,6 @@
             v-model="userSettings.ltcxpub"
             :disabled="!loaded">
           </v-text-field>
-        </v-flex>
-      </v-layout>
-      <v-layout row>
-        <v-flex xs12 sm6 offset-sm3>
           <v-text-field
             name="ethaccount"
             label="ETH Account"
@@ -43,10 +37,6 @@
             v-model="userSettings.ethAccount"
             :disabled="!loaded">
           </v-text-field>
-        </v-flex>
-      </v-layout>
-      <v-layout row>
-        <v-flex xs12 sm6 offset-sm3>
           <v-text-field
             name="xmraddress"
             label="XMR Address"
@@ -55,10 +45,6 @@
             v-model="userSettings.xmrAddress"
             :disabled="!loaded">
           </v-text-field>
-        </v-flex>
-      </v-layout>
-      <v-layout row>
-        <v-flex xs12 sm6 offset-sm3>
           <v-text-field
             name="xmrprivateviewkey"
             label="XMR Private View Key"
@@ -67,10 +53,6 @@
             :rules="xmrViewKeyRules"
             :disabled="!loaded">
           </v-text-field>
-        </v-flex>
-      </v-layout>
-      <v-layout row>
-        <v-flex xs12 sm6 offset-sm3>
           <v-text-field
             name="xmrpublicviewkey"
             label="XMR Public View Key"
@@ -79,29 +61,22 @@
             :rules="xmrViewKeyRules"
             :disabled="!loaded">
           </v-text-field>
-        </v-flex>
-      </v-layout>
-      <v-layout>
-        <v-flex xs12 sm6 offset-sm3>
-          <v-btn
-            class="primary"
-            ref="saveBtn"
-            :disabled="!valid || !loaded"
-            @click="submit">Save Changes</v-btn>
-        </v-flex>
-      </v-layout>
-    </v-form>
-    <v-layout row justify-center>
-      <v-dialog v-model="savedDialog" max-width="290">
-        <v-card>
-          <v-card-title class="headline">Changes Saved!</v-card-title>
-          <v-card-actions>
-            <v-spacer></v-spacer>
-            <v-btn flat="flat" @click.native="savedDialog = false">Close</v-btn>
-          </v-card-actions>
-        </v-card>
-      </v-dialog>
+        </v-card-text>
+        <!--<v-divider></v-divider>-->
+        <v-card-actions>
+          <v-flex justify-center>
+            <v-btn
+              class="primary"
+              ref="saveBtn"
+              :disabled="!valid || !loaded"
+              @click="submit">Save Changes</v-btn>
+          </v-flex>
+        </v-card-actions>
+        </v-form>
+      </v-card>
+    </v-flex>
     </v-layout>
+
   </v-container>
 </template>
 <script>
@@ -135,6 +110,7 @@ export default {
   computed: {},
   methods: {
     submit () {
+      console.log(this.$refs.form);
       if (this.$refs.form.validate()) {
         this.$store.dispatch('setUserSettingsAction', this.userSettings);
       }

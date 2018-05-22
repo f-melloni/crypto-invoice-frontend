@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <v-app>
-      <v-toolbar app>
+      <v-toolbar app dark color="indigo">
         <span class="title ml-3 mr-5">Crypto Invoice</span>
         <v-spacer></v-spacer>
         <v-toolbar-items class="hidden-sm-and-down" v-for="item in navItems" :key="item.title">

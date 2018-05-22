@@ -1,159 +1,84 @@
 <template>
-  <v-container fluid grid-list-sm>
-    <v-layout row>
-      <v-flex xs12 sm12 md12>
-        <h1>Invoice Details</h1>
-      </v-flex>
-    </v-layout>
-    <v-layout row>
-      <v-flex x3 sm3 offset-sm3 text-sm-left>
-        <div><b>Name: </b>{{invoice.name}}</div>
-        <div><b>Description: </b>{{invoice.description}}</div>
-      </v-flex>
-      <v-flex x1 sm1 text-sm-right offset-xs2>
-        <v-card color="blue lighten-2" dark>
-        <v-card-text color="white">
-          <h2>{{invoice.fiatAmount}} {{invoice.fiatCurrencyCode}}</h2>
-        </v-card-text>
+  <v-container fluid grid-list-md>
+    <v-layout row wrap><!--Top card-->
+      <v-flex xs12 md12 lg8 offset-lg2>
+        <v-card>
+          <v-card-title >
+            <v-avatar size="36px" :color="avatarColor">
+              <v-icon :title="paymentStatus" v-if="invoice.state === 0" dark>radio_button_unchecked</v-icon>
+              <v-icon :title="paymentStatus" v-if="invoice.state === 1" dark>access_time</v-icon>
+              <v-icon :title="paymentStatus" v-if="invoice.state === 2" dark>done_all</v-icon>
+            </v-avatar>
+            <h1>
+              &nbsp;Invoice
+            </h1>
+          </v-card-title>
+          <v-card-text>
+            <v-layout row wrap>
+              <v-flex xs12 md12 lg6  pr-2>
+                <v-text-field readonly label="Name" v-model="invoice.name"></v-text-field>
+                <v-text-field readonly label="Mail of Recipient" v-model="invoice.recipient"></v-text-field>
+                <v-text-field class="input-group--focused" :color="avatarColor" readonly label="Payment Status" v-model="paymentStatus"></v-text-field>
+              </v-flex>
+              <v-flex xs12 md12 lg6 pl-2>
+                <v-text-field readonly label="Payment Amount in Fiat" v-model="paymentAmount"></v-text-field>
+                <v-text-field readonly label="Date Created" v-model="invoice.dateCreated"></v-text-field>
+                <v-text-field readonly label="Date Received" v-model="dateReceived"></v-text-field>
+              </v-flex>
+              <v-text-field xs12 multi-line readonly label="Description" v-model="invoice.description"></v-text-field>
+            </v-layout>
+          </v-card-text>
         </v-card>
       </v-flex>
     </v-layout>
-    <v-layout row>
-      <v-flex x6 sm6 offset-sm3>
-        <v-divider></v-divider>
-      </v-flex>
-    </v-layout>
-    <v-layout row>
-      <v-flex xs6 sm6 offset-sm3 text-sm-left>
-        <b>Payment Status: </b>{{invoice.state}}
-      </v-flex>
-    </v-layout>
-    <v-layout row>
-      <v-flex xs6 sm6 offset-sm3 text-sm-left>
-        <b>Fixed Echange Rate on Creation: </b>{{isFixedOnCreation}}
-      </v-flex>
-    </v-layout>
-    <v-layout row>
-      <v-flex xs6 sm6 offset-sm3 text-sm-left>
-        <b>Created By: </b>{{invoice.createdBy}}
-      </v-flex>
-    </v-layout>
-    <v-layout row>
-      <v-flex xs6 sm6 offset-sm3 text-sm-left>
-        <b>Date Created: </b>{{invoice.dateCreated}}
-      </v-flex>
-    </v-layout>
-    <div v-if="invoice.dateReceived">
-    <v-layout row>
-      <v-flex xs6 sm6 offset-sm3 text-sm-left>
-        <b>Date Received: </b>{{invoice.dateReceived}}
-      </v-flex>
-    </v-layout>
-    <v-layout row>
-      <v-flex xs6 sm6 offset-sm3 text-sm-left>
-        <b>Transaction in Blockchain: </b><a href="https://www.etherchain.org/tx/placeholder">https://www.etherchain.org/tx/placeholder</a>
-      </v-flex>
-    </v-layout>
-    </div>
-    <v-layout row>
-      <v-flex x6 sm6 offset-sm3>
-        <v-divider></v-divider>
-      </v-flex>
-    </v-layout>
-    <!--ETH -->
-    <div v-if="userSettings.ethAccount">
-      <v-layout row>
-        <v-flex xs6 sm6 offset-sm3 text-sm-left>
-          <b>ETH Address: </b>{{userSettings.ethAccount}}
-        </v-flex>
-      </v-layout>
-      <v-layout row>
-        <v-flex xs6 sm6 offset-sm3 text-sm-left>
-          <b>ETH Variable Symbol: </b>{{invoice.ethvs}}
-        </v-flex>
-      </v-layout>
-      <v-layout row>
-        <v-flex xs6 sm6 offset-sm3 text-sm-left>
-          <b>Fixed ETH Exchange Rate: </b>{{invoice.newFixER_ETH}}
-        </v-flex>
-      </v-layout>
-      <v-layout row>
-        <v-flex x6 sm6 offset-sm3>
-          <v-divider></v-divider>
-        </v-flex>
-      </v-layout>
-    </div>
 
-    <!--BTC -->
-    <div v-if="userSettings.btcxpub">
-      <v-layout row>
-        <v-flex xs6 sm6 offset-sm3 text-sm-left>
-          <b>BTC Address: </b>{{invoice.btcAddress}}
-        </v-flex>
-      </v-layout>
-      <v-layout row>
-        <v-flex x6 sm6 offset-sm3>
-          <v-divider></v-divider>
-        </v-flex>
-      </v-layout>
-    </div>
-
-    <!--LTC -->
-    <div v-if="userSettings.ltcxpub">
-      <v-layout row>
-        <v-flex xs6 sm6 offset-sm3 text-sm-left>
-          <b>LTC Address: </b>{{invoice.ltcAddress}}
-        </v-flex>
-      </v-layout>
-      <v-layout row>
-        <v-flex x6 sm6 offset-sm3>
-          <v-divider></v-divider>
-        </v-flex>
-      </v-layout>
-    </div>
-
-    <!--XMR -->
-    <div v-if="userSettings.xmrAddress">
-      <v-layout row>
-        <v-flex xs6 sm6 offset-sm3 text-sm-left>
-          <b>XMR Address: </b>{{userSettings.xmrAddress}}
-        </v-flex>
-      </v-layout>
-      <v-layout row>
-        <v-flex xs6 sm6 offset-sm3 text-sm-left>
-          <b>XMR VS: </b>{{invoice.xmrvs}}
-        </v-flex>
-      </v-layout>
-      <v-layout row>
-        <v-flex x6 sm6 offset-sm3>
-          <v-divider></v-divider>
-        </v-flex>
-      </v-layout>
-    </div>
-
-    <!--
-    {{invoice.newFixER_BTC}}
-    {{invoice.newFixER_ETH}}
-    {{invoice.newFixER_LTC}}
-    {{invoice.newFixER_XMR}}
-    {{invoice.oldFixER_BTC}}
-    {{invoice.oldFixER_ETH}}
-    {{invoice.oldFixER_LTC}}
-    {{invoice.oldFixER_XMR}}
-    -->
+    <v-layout row wrap><!--Crypto Cards-->
+      <v-flex xs12 md12 offset-lg2 lg8>
+        <v-layout row wrap>
+          <v-flex xs12 md12 lg6 v-if="invoice.btcAddress">
+            <crypto-card v-if="renderCryptoCard('btc')" currencyCode="btc" color="orange" :invoice="invoice"></crypto-card>
+          </v-flex>
+          <v-flex xs12 md12 lg6 v-if="invoice.ltcAddress">
+            <crypto-card  v-if="renderCryptoCard('ltc')" currencyCode="ltc" color="grey" :invoice="invoice"></crypto-card>
+          </v-flex>
+        </v-layout>
+      </v-flex>
+    </v-layout>
   </v-container>
 </template>
 
 <script>
+import utils from '@/utils.js';
+import CryptoCard from '@/components/CryptoCard';
 export default {
+  components: {
+    CryptoCard
+  },
   name: 'Invoice',
   props: ['id'],
   data () {
     return {
-      // invoice: this.$store.getters.invoices.find(i => i.id === this.$route.params.id)
     }
   },
   computed: {
+    stateIcon () {
+      var icon;
+      switch (this.invoice.state) {
+        case 0:
+          icon = 'radio_button_unchecked';
+          break;
+        case 1:
+          icon = 'access_time';
+          break;
+        case 2:
+          icon = 'done_all';
+          break;
+      }
+      return icon;
+    },
+    btcDecimals () {
+      return utils.btc.decimals;
+    },
     invoice () {
       return this.$store.getters.invoices.find(i => i.id === this.$route.params.id);
     },
@@ -165,6 +90,70 @@ export default {
     },
     isFixedOnCreation () {
       return this.invoice.fixedRateOnCreation ? 'Yes' : 'No';
+    },
+    paymentAmount () {
+      return this.invoice.fiatAmount + ' ' + this.invoice.fiatCurrencyCode;
+    },
+    paymentStatus () {
+      var status;
+      switch (this.invoice.state) {
+        case 0:
+          status = 'Pending';
+          break;
+        case 1:
+          status = 'Waiting for Confirmation';
+          break;
+        case 2:
+          status = 'Received and Confirmed';
+          break;
+        default:
+          status = 'UNKNOWN';
+          break;
+      }
+      return status;
+    },
+    dateReceived () {
+      return this.invoice.dateReceived === null ? ' ' : this.invoice.dateReceived;
+    },
+    avatarColor () {
+      var color;
+      switch (this.invoice.state) {
+        case 0:
+          color = 'grey';
+          break;
+        case 1:
+          color = 'orange';
+          break;
+        case 2:
+          color = 'success';
+          break;
+        default:
+          color = 'primary'
+          break;
+      }
+      return color;
+    }
+  },
+  methods: {
+    renderCryptoCard (currencyCode) {
+      if (!this.invoice.transactionCurrencyCode) {
+        return true;
+      }
+      return this.invoice.transactionCurrencyCode.toLowerCase() === currencyCode.toLowerCase();
+    },
+    // redirect to blockchain explorer
+    viewTransaction (currency) {
+      switch (currency.toLowerCase()) {
+        case 'btc':
+          window.location.replace('https://live.blockcypher.com/btc/tx/' + this.invoice.transactionId);
+          break;
+        case 'ltc':
+          window.location.replace('https://live.blockcypher.com/ltc/tx/' + this.invoice.transactionId);
+          break;
+      }
+    },
+    renderTransaction (currency) {
+      return this.invoice.transactionCurrencyCode ? this.invoice.transactionCurrencyCode.toLowerCase() === currency.toLowerCase() : false;
     }
   }
 }

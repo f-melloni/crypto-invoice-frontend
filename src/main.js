@@ -5,8 +5,9 @@ import App from './App';
 import store from './store/store';
 import router from './router';
 import Vuetify from 'vuetify';
-import 'vuetify/dist/vuetify.min.css';
+import 'vuetify/dist/vuetify.css';
 import 'material-design-icons-iconfont/dist/material-design-icons.css';
+import 'cryptocoins-icons/webfont/cryptocoins.css';
 import axios from 'axios';
 
 Vue.use(Vuetify);
