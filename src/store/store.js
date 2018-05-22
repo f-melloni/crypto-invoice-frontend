@@ -25,14 +25,6 @@ export default new Vuex.Store({
   },
   mutations: {
     addInvoice: (state, payload) => {
-      // get user's invoices from the WebAPI
-      // TODO: define structure here or accept it from WebAPI?
-      /* var invoice = {
-        id: payload.id,
-        name: payload.name,
-        dateCreated: payload.dateCreated,
-        state: payload.state
-      } */
       state.invoices.unshift(payload);
     },
     setUserId: (state, payload) => {
@@ -48,6 +40,13 @@ export default new Vuex.Store({
       state.userSettings.xmrAddress = payload.xmrAddress;
       state.userSettings.xmrPrivateViewKey = payload.xmrPrivateViewKey;
       state.userSettings.xmrPublicViewKey = payload.xmrPublicViewKey;
+    },
+    deleteInvoice: (state, payload) => {
+      var toDelete = state.invoices.find(i => i.id === payload);
+      if (toDelete) {
+        var index = state.invoices.indexOf(toDelete);
+        state.invoices.splice(index, 1);
+      }
     }
   },
   actions: {
@@ -72,6 +71,15 @@ export default new Vuex.Store({
         withCredentials: true
       }).then(() => {
         commit('setUserSettings', payload);
+      }).catch(function (error) {
+        console.error(error);
+      });
+    },
+    deleteInvoiceAction: ({ commit, state }, payload) => {
+      axios.delete('http://localhost:56442/api/invoice/' + payload, {
+        withCredentials: true
+      }).then(() => {
+        commit('deleteInvoice', payload);
       }).catch(function (error) {
         console.error(error);
       });

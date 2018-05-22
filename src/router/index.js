@@ -3,7 +3,6 @@ import Router from 'vue-router';
 // import HelloWorld from '@/components/HelloWorld'
 import AccountSettingsPage from '@/components/AccountSettingsPage';
 import PaymentRequestPage from '@/components/PaymentRequestPage';
-import PaymentStatusPage from '@/components/PaymentStatusPage';
 import DashboardPage from '@/components/Dashboard';
 import InvoicePage from '@/components/Invoice'
 
@@ -15,18 +14,12 @@ export default new Router({
     {
       path: '/',
       name: 'Dashboard',
-      component: DashboardPage,
-      alias: '/dashboard'
+      component: DashboardPage
     },
     {
       path: '/paymentrequest',
       name: 'PaymentRequestPage',
       component: PaymentRequestPage
-    },
-    {
-      path: '/paymentstatus',
-      name: 'PaymentStatusPage',
-      component: PaymentStatusPage
     },
     {
       path: '/accountsettings',

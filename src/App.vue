@@ -22,9 +22,8 @@ export default {
   data: () => ({
     navItems: [
       { title: 'Account Settings', icon: 'account-settings-variant', path: '/accountsettings' },
-      { title: 'Payment Status', icon: 'currency-btc', path: '/paymentstatus' },
       { title: 'Payment Request', icon: 'currency-btc', path: '/paymentrequest' },
-      { title: 'Dashboard', path: '/dashboard' }
+      { title: 'Home', path: '/' }
     ],
     methods: {
       menuClick: function (params) {

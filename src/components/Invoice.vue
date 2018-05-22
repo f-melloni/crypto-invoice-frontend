@@ -35,10 +35,10 @@
     <v-layout row wrap><!--Crypto Cards-->
       <v-flex xs12 md12 offset-lg2 lg8>
         <v-layout row wrap>
-          <v-flex xs12 md12 lg6 v-if="invoice.btcAddress">
+          <v-flex xs12 md12 lg6 v-if="invoice.acceptBtc">
             <crypto-card v-if="renderCryptoCard('btc')" currencyCode="btc" color="orange" :invoice="invoice"></crypto-card>
           </v-flex>
-          <v-flex xs12 md12 lg6 v-if="invoice.ltcAddress">
+          <v-flex xs12 md12 lg6 v-if="invoice.acceptLtc">
             <crypto-card  v-if="renderCryptoCard('ltc')" currencyCode="ltc" color="grey" :invoice="invoice"></crypto-card>
           </v-flex>
         </v-layout>
