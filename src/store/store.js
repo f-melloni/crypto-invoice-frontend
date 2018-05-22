@@ -2,6 +2,7 @@
 import Vuex from 'vuex';
 import Vue from 'vue';
 import axios from 'axios';
+import { connectionString } from '@/appSettings.json';
 
 Vue.use(Vuex);
 export default new Vuex.Store({
@@ -60,7 +61,7 @@ export default new Vuex.Store({
       commit('setDisplayName', payload);
     },
     setUserSettingsAction: ({ commit, state }, payload) => {
-      axios.put('http://localhost:56442/api/user-settings/' + state.userId, {
+      axios.put(connectionString + '/api/user-settings/' + state.userId, {
         btcxpub: payload.btcxpub,
         ltcxpub: payload.ltcxpub,
         ethAccount: payload.ethAccount,
@@ -76,7 +77,7 @@ export default new Vuex.Store({
       });
     },
     deleteInvoiceAction: ({ commit, state }, payload) => {
-      axios.delete('http://localhost:56442/api/invoice/' + payload, {
+      axios.delete(connectionString + '/api/invoice/' + payload, {
         withCredentials: true
       }).then(() => {
         commit('deleteInvoice', payload);

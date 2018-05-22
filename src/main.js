@@ -9,6 +9,7 @@ import 'vuetify/dist/vuetify.css';
 import 'material-design-icons-iconfont/dist/material-design-icons.css';
 import 'cryptocoins-icons/webfont/cryptocoins.css';
 import axios from 'axios';
+import { connectionString } from './appSettings.json';
 
 Vue.use(Vuetify);
 Vue.config.productionTip = false;
@@ -22,7 +23,7 @@ new Vue({
   template: '<App/>',
   created () {
     // load the store here
-    axios.get('http://localhost:56442/api/invoices/init', {
+    axios.get(connectionString + '/api/invoices/init', {
       withCredentials: true
     }).then(({ data }) => {
       this.$store.dispatch('setUserIdAction', data.userId);
@@ -31,7 +32,7 @@ new Vue({
         this.$store.dispatch('addInvoiceAction', element);
       });
       // load user settings here
-      axios.get('http://localhost:56442/api/user-settings/' + this.$store.getters.userId, {
+      axios.get(connectionString + '/api/user-settings/' + this.$store.getters.userId, {
         withCredentials: true
       }).then((response) => {
         this.$store.dispatch('setUserSettingsAction', response.data);
