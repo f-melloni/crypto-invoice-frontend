@@ -1,7 +1,7 @@
 <template>
   <v-container>
     <v-layout row>
-      <v-flex xs12 sm6 offset-sm3>
+      <v-flex xs12 sm8 offset-sm2>
         <v-card class="mb-2">
           <v-card-text>
             <h1>Invoices</h1>
@@ -10,7 +10,7 @@
       </v-flex>
     </v-layout>
     <v-layout row>
-      <v-flex xs12 sm6 offset-sm3>
+      <v-flex xs12 sm8 offset-sm2>
         <v-data-table
         :headers="headers"
         :items="invoices"
@@ -28,7 +28,7 @@
                 <v-icon color="teal">search</v-icon>
               </v-btn>
               <v-btn icon class="mx-0" @click="deleteItem(props.item)">
-                <v-icon color="pink">delete</v-icon>
+                <v-icon color="red">delete</v-icon>
               </v-btn>
             </td>
           </template>
@@ -41,7 +41,7 @@
     <v-dialog v-model="deleteDialog" max-width="290">
       <v-card>
         <v-card-title class="headline">Delete Invoice?</v-card-title>
-        <v-card-text class="text-xs-lef">You are about to permanently delete the selected invoice <b>{{deletedItem.name}}</b>. Are you sure?</v-card-text>
+        <v-card-text class="text-xs-left">You are about to permanently delete the selected invoice <b>{{deletedItem.name}}</b>. Are you sure?</v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
           <v-btn color="red darken-1" flat="flat" @click.native="deleteItemConfirmed()">Delete</v-btn>
@@ -81,7 +81,6 @@ export default {
     deleteItem (item) {
       this.deletedItem = item;
       this.deleteDialog = true;
-      console.log(item.id);
     },
     deleteItemConfirmed () {
       this.$store.dispatch('deleteInvoiceAction', this.deletedItem.id);
@@ -95,10 +94,10 @@ export default {
       return utils.paymentStates[state];
     },
     accepting (item) {
-      var btc = item.acceptBtc;
-      var ltc = item.acceptLtc;
-      var eth = item.acceptEth;
-      var xmr = item.acceptXmr;
+      var btc = item.acceptBTC;
+      var ltc = item.acceptLTC;
+      var eth = item.acceptETH;
+      var xmr = item.acceptXMR;
       var accepting = [];
       var acceptingResult = '';
 

@@ -25,8 +25,8 @@ export default new Vuex.Store({
     userId: state => state.userId
   },
   mutations: {
-    addInvoice: (state, payload) => {
-      state.invoices.unshift(payload);
+    getInvoice: (state, payload) => {
+      state.invoices.push(payload);
     },
     setUserId: (state, payload) => {
       state.userId = payload
@@ -48,11 +48,38 @@ export default new Vuex.Store({
         var index = state.invoices.indexOf(toDelete);
         state.invoices.splice(index, 1);
       }
+    },
+    loadInvoices: (state, payload) => {
+      payload.forEach(invoice => {
+        state.invoices.push(invoice);
+      });
     }
   },
   actions: {
-    addInvoiceAction: ({ commit }, payload) => {
-      commit('addInvoice', payload);
+    getInvoiceAction: ({ commit }, payload) => {
+      axios.get(connectionString + '/api/invoices/' + payload, {
+        withCredentials: true
+      }).then(function (response) {
+        commit('getInvoice', response.data);
+      }).catch(function (error) {
+        console.error(error);
+      });
+    },
+    initStore: ({ commit }) => {
+      axios.get(connectionString + '/api/invoices/init', {
+        withCredentials: true
+      }).then(({ data }) => {
+        commit('setUserId', data.userId);
+        commit('setDisplayName', data.displayName);
+        commit('loadInvoices', data.invoiceList);
+        axios.get(connectionString + '/api/user-settings/' + data.userId, {
+          withCredentials: true
+        }).then((response) => {
+          commit('setUserSettings', response.data);
+        }).catch(function (error) {
+          console.log(error);
+        });
+      });
     },
     setUserIdAction: ({ commit }, payload) => {
       commit('setUserId', payload);

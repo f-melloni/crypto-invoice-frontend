@@ -5,9 +5,9 @@
         <v-card>
           <v-card-title >
             <v-avatar size="36px" :color="avatarColor">
-              <v-icon :title="paymentStatus" v-if="invoice.state === 0" dark>radio_button_unchecked</v-icon>
-              <v-icon :title="paymentStatus" v-if="invoice.state === 1" dark>access_time</v-icon>
-              <v-icon :title="paymentStatus" v-if="invoice.state === 2" dark>done_all</v-icon>
+              <v-icon :title="paymentStatus" v-if="invoice.state === 1" dark>radio_button_unchecked</v-icon>
+              <v-icon :title="paymentStatus" v-if="invoice.state === 2" dark>access_time</v-icon>
+              <v-icon :title="paymentStatus" v-if="invoice.state === 3" dark>done_all</v-icon>
             </v-avatar>
             <h1>
               &nbsp;Invoice
@@ -25,7 +25,9 @@
                 <v-text-field readonly label="Date Created" v-model="invoice.dateCreated"></v-text-field>
                 <v-text-field readonly label="Date Received" v-model="dateReceived"></v-text-field>
               </v-flex>
-              <v-text-field xs12 multi-line readonly label="Description" v-model="invoice.description"></v-text-field>
+              <v-flex>
+                <v-text-field xs12 multi-line readonly label="Description" v-model="invoice.description"></v-text-field>
+              </v-flex>
             </v-layout>
           </v-card-text>
         </v-card>
@@ -35,10 +37,10 @@
     <v-layout row wrap><!--Crypto Cards-->
       <v-flex xs12 md12 offset-lg2 lg8>
         <v-layout row wrap>
-          <v-flex xs12 md12 lg6 v-if="invoice.acceptBtc">
+          <v-flex xs12 md12 lg6 v-if="invoice.acceptBTC">
             <crypto-card v-if="renderCryptoCard('btc')" currencyCode="btc" color="orange" :invoice="invoice"></crypto-card>
           </v-flex>
-          <v-flex xs12 md12 lg6 v-if="invoice.acceptLtc">
+          <v-flex xs12 md12 lg6 v-if="invoice.acceptLTC">
             <crypto-card  v-if="renderCryptoCard('ltc')" currencyCode="ltc" color="grey" :invoice="invoice"></crypto-card>
           </v-flex>
         </v-layout>
@@ -97,13 +99,13 @@ export default {
     paymentStatus () {
       var status;
       switch (this.invoice.state) {
-        case 0:
+        case 1:
           status = 'Pending';
           break;
-        case 1:
+        case 2:
           status = 'Waiting for Confirmation';
           break;
-        case 2:
+        case 3:
           status = 'Received and Confirmed';
           break;
         default:
@@ -118,13 +120,13 @@ export default {
     avatarColor () {
       var color;
       switch (this.invoice.state) {
-        case 0:
+        case 1:
           color = 'grey';
           break;
-        case 1:
+        case 2:
           color = 'orange';
           break;
-        case 2:
+        case 3:
           color = 'success';
           break;
         default:

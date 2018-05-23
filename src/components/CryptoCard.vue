@@ -8,7 +8,7 @@
         &nbsp;{{ccUp}}
       </h2>
       <v-spacer></v-spacer>
-      <v-btn dark v-if="invoice.state !== 0" round :color="stateColor" @click="viewTransaction()"><v-icon>{{stateIcon}}</v-icon>&nbsp;View in Explorer</v-btn>
+      <v-btn dark v-if="invoice.state !== 1" round :color="stateColor" @click="viewTransaction()"><v-icon>{{stateIcon}}</v-icon>&nbsp;View in Explorer</v-btn>
     </v-card-title>
     <v-card-text>
       <v-text-field readonly label="Address" v-model="invoice[currencyCode.toLowerCase() + 'Address']"></v-text-field>
@@ -52,13 +52,13 @@ export default{
     stateColor () {
       var stateColor;
       switch (this.invoice.state) {
-        case 0:
+        case 1:
           stateColor = 'grey';
           break;
-        case 1:
+        case 2:
           stateColor = 'orange';
           break;
-        case 2:
+        case 3:
           stateColor = 'success';
           break;
         default:
@@ -70,13 +70,13 @@ export default{
     stateIcon () {
       var icon;
       switch (this.invoice.state) {
-        case 0:
+        case 1:
           icon = 'radio_button_unchecked';
           break;
-        case 1:
+        case 2:
           icon = 'access_time';
           break;
-        case 2:
+        case 3:
           icon = 'done_all';
           break;
       }

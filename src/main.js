@@ -8,8 +8,8 @@ import Vuetify from 'vuetify';
 import 'vuetify/dist/vuetify.css';
 import 'material-design-icons-iconfont/dist/material-design-icons.css';
 import 'cryptocoins-icons/webfont/cryptocoins.css';
-import axios from 'axios';
-import { connectionString } from './appSettings.json';
+// import axios from 'axios';
+// import { connectionString } from './appSettings.json';
 
 Vue.use(Vuetify);
 Vue.config.productionTip = false;
@@ -23,7 +23,8 @@ new Vue({
   template: '<App/>',
   created () {
     // load the store here
-    axios.get(connectionString + '/api/invoices/init', {
+    this.$store.dispatch('initStore');
+    /* axios.get(connectionString + '/api/invoices/init', {
       withCredentials: true
     }).then(({ data }) => {
       this.$store.dispatch('setUserIdAction', data.userId);
@@ -39,6 +40,6 @@ new Vue({
       }).catch(function (error) {
         console.log(error);
       });
-    });
+    }); */
   }
 });
