@@ -22,8 +22,8 @@
               </v-flex>
               <v-flex xs12 md12 lg6 pl-2>
                 <v-text-field readonly label="Payment Amount in Fiat" v-model="paymentAmount"></v-text-field>
-                <v-text-field readonly label="Date Created" v-model="invoice.dateCreated"></v-text-field>
-                <v-text-field readonly label="Date Received" v-model="dateReceived"></v-text-field>
+                <v-text-field readonly label="Date Created" :value="invoice.dateCreated | formatDate"></v-text-field>
+                <v-text-field readonly label="Date Received" :value="invoice.dateReceived | formatDate"></v-text-field>
               </v-flex>
               <v-flex>
                 <v-text-field xs12 multi-line readonly label="Description" v-model="invoice.description"></v-text-field>

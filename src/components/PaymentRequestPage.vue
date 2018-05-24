@@ -1,5 +1,6 @@
 <template>
   <v-container fluid grid-list-md>
+    <v-form ref="form" v-model="valid">
     <!--Main Options-->
     <v-layout row wrap>
       <v-flex xs12 md12 lg8 offset-lg2>
@@ -10,17 +11,20 @@
           <v-card-text>
             <v-layout row wrap>
               <v-flex xs12 lg6 pr-2>
-                <v-text-field label="Name" v-model="newInvoice.name"></v-text-field>
-                <v-text-field label="Mail of Recipient" v-model="newInvoice.recipient"></v-text-field>
+                <v-text-field required label="Name" v-model="newInvoice.name" :rules="[rules.notEmpty]"></v-text-field>
+                <v-text-field required label="Mail of Recipient" v-model="newInvoice.recipient" :rules="[rules.notEmpty]"></v-text-field>
               </v-flex>
               <v-flex xs12 lg6 pl-2>
-                <v-text-field label="Payment Amount in Fiat" v-model="newInvoice.fiatAmount"></v-text-field>
-                <v-select label="Select Fiat Currency" :items="fiatCurrencies" v-model="newInvoice.fiatCurrencyCode"></v-select>
+                <v-text-field required label="Payment Amount in Fiat" v-model="newInvoice.fiatAmount" :rules="[rules.notEmpty, rules.amount]"></v-text-field>
+                <v-select required label="Select Fiat Currency" :items="fiatCurrencies" v-model="newInvoice.fiatCurrencyCode" :rules="[rules.notEmpty]"></v-select>
               </v-flex>
               <v-flex>
                 <v-text-field xs12 multi-line label="Description" v-model="newInvoice.description"></v-text-field>
               </v-flex>
             </v-layout>
+            <v-flex class="text-sm-left">
+              <small>*indicates required field</small>
+            </v-flex>
           </v-card-text>
         </v-card>
       </v-flex>
@@ -36,13 +40,14 @@
               <v-card-text>
                 <v-layout row wrap>
                   <v-flex xs12 lg6>
-                    <v-checkbox color="orange" label="BTC" v-model="newInvoice.acceptBTC"></v-checkbox>
-                    <v-checkbox color="grey" label="LTC" v-model="newInvoice.acceptLTC"></v-checkbox>
+                    <v-checkbox v-model="acceptCryptos" value="BTC" color="orange" label="BTC"></v-checkbox>
+                    <v-checkbox v-model="acceptCryptos" value="LTC" color="grey" label="LTC"></v-checkbox>
                   </v-flex>
                   <v-flex xs12 lg6>
                     <v-checkbox color="blue darken-3" label="ETH"></v-checkbox>
                     <v-checkbox color="orange darken-3" label="XMR"></v-checkbox>
                   </v-flex>
+                  <v-flex class="text-xs-left"><small>Select at least one</small></v-flex>
                 </v-layout>
               </v-card-text>
             </v-card>
@@ -61,14 +66,31 @@
       </v-flex>
     </v-layout>
     <v-layout row wrap>
-      <v-flex xs12 md12 lg8 offset-lg2 justify-center>
-        <v-card>
-          <v-card-text>
-            <v-btn @click="submit" color="primary">Submit</v-btn>
-          </v-card-text>
-        </v-card>
+      <v-flex xs12 md12 lg8 offset-lg2>
+        <v-layout>
+          <v-flex xs3 align-content-center>
+            <v-card>
+              <v-card-text>
+                <v-layout row>
+                  <v-flex>
+                    <v-btn @click="submit" :disabled="!valid" color="primary">Submit</v-btn>
+                  </v-flex>
+                  <v-flex>
+                    <v-btn @click="reset" color="primary">Reset</v-btn>
+                  </v-flex>
+                </v-layout>
+              </v-card-text>
+            </v-card>
+          </v-flex>
+          <v-flex lg9>
+            <v-card v-if="atLeastOneCheckboxAlert">
+              <v-alert type="error" outline :value="atLeastOneCheckboxAlert">At least one cryptocurrency must be selected.</v-alert>
+            </v-card>
+          </v-flex>
+        </v-layout>
       </v-flex>
     </v-layout>
+    </v-form>
   </v-container>
 </template>
 <script>
@@ -78,10 +100,33 @@ export default {
   name: 'PaymentRequestPage',
   data () {
     return {
+      atLeastOneCheckboxAlert: false,
+      acceptCryptos: [],
+      valid: false,
       newInvoice: {},
       uploadedFile: null,
-      uploadedFileName: ''
+      uploadedFileName: '',
+      rules: {
+        email: (value) => {
+          const pattern = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+          return pattern.test(value) || 'Invalid e-mail.'
+        },
+        amount: (value) => {
+          return !isNaN(value) || 'Must be a valid number.';
+        },
+        notEmpty: (value) => {
+          return (value || '').length > 0 || 'This field is required';
+        }
+      }
     };
+  },
+  watch: {
+    acceptCryptos () {
+      if (this.atLeastOneCheckboxAlert && this.acceptCryptos.length > 0) {
+        this.atLeastOneCheckboxAlert = false;
+        this.valid = this.$refs.form.validate();
+      }
+    }
   },
   computed: {
     fiatCurrencies () {
@@ -96,43 +141,56 @@ export default {
       this.uploadedFile = file;
       this.uploadedFileName = file.name;
     },
+    reset () {
+      this.$refs.form.reset();
+    },
     submit () {
-      var self = this;
-      function send (payload) {
-        axios.post(connectionString + '/api/invoices', payload, {
-          withCredentials: true
-        }).then(function (response) {
-          if (response.status === 200) {
-            self.$store.dispatch('getInvoiceAction', response.data);
-          }
-        }).catch(function (error) {
-          console.error('Post Error: ', error);
-        });
-      };
+      if (this.acceptCryptos.length === 0) {
+        this.atLeastOneCheckboxAlert = true;
+        this.valid = false;
+        return;
+      }
 
-      var payload = {
-        Name: this.newInvoice.name,
-        Description: this.newInvoice.description,
-        FiatAmount: this.newInvoice.fiatAmount,
-        FiatCurrencyCode: this.newInvoice.fiatCurrencyCode,
-        AcceptBTC: this.newInvoice.acceptBTC,
-        AcceptLTC: this.newInvoice.acceptLTC,
-        Recipient: this.newInvoice.recipient
-      };
-      // Send with file
-      if (this.uploadedFile) {
-        // Get Base64
-        var reader = new FileReader();
-        reader.onload = function () {
-          payload.File = this.result;
+      this.atLeastOneCheckboxAlert = false;
+      if (this.$refs.form.validate()) {
+        var self = this;
+        var send = function (payload) {
+          axios.post(connectionString + '/api/invoices', payload, {
+            withCredentials: true
+          }).then(function (response) {
+            if (response.status === 200) {
+              self.$store.dispatch('getInvoiceAction', response.data);
+            }
+          }).catch(function (error) {
+            console.error('Post Error: ', error);
+          });
+        };
+
+        var payload = {
+          Name: this.newInvoice.name,
+          Description: this.newInvoice.description,
+          FiatAmount: this.newInvoice.fiatAmount,
+          FiatCurrencyCode: this.newInvoice.fiatCurrencyCode,
+          AcceptBTC: this.acceptCryptos.includes('BTC'),
+          AcceptLTC: this.acceptCryptos.includes('LTC'),
+          Recipient: this.newInvoice.recipient
+        };
+        // Send with file
+        if (this.uploadedFile) {
+          payload.FileName = this.uploadedFile.name;
+          // Get Base64
+          var reader = new FileReader();
+          reader.onload = function () {
+            payload.File = this.result;
+            send(payload);
+          };
+          reader.readAsDataURL(this.uploadedFile);
+          reader.onerror = function (error) {
+            console.error('File Error: ', error);
+          };
+        } else { // Send without file
           send(payload);
-        };
-        reader.readAsDataURL(this.uploadedFile);
-        reader.onerror = function (error) {
-          console.error('File Error: ', error);
-        };
-      } else { // Send without file
-        send(payload);
+        }
       }
     }
   }
@@ -144,6 +202,6 @@ export default {
   display: none;
 }
 .subCard {
-  height: 200px !important;
+  height: 240px !important;
 }
 </style>

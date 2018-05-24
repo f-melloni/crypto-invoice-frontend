@@ -10,8 +10,17 @@ import 'material-design-icons-iconfont/dist/material-design-icons.css';
 import 'cryptocoins-icons/webfont/cryptocoins.css';
 // import axios from 'axios';
 // import { connectionString } from './appSettings.json';
+import './filters.js';
+import colors from 'vuetify/es5/util/colors';
 
-Vue.use(Vuetify);
+Vue.use(Vuetify, {
+  theme: {
+    // primary: colors.indigo.base,
+    secondary: colors.grey.darken1,
+    accent: colors.shades.black,
+    error: colors.red.accent3
+  }
+});
 Vue.config.productionTip = false;
 
 /* eslint-disable no-new */

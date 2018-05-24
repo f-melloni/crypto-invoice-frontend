@@ -110,7 +110,6 @@ export default {
   computed: {},
   methods: {
     submit () {
-      console.log(this.$refs.form);
       if (this.$refs.form.validate()) {
         this.$store.dispatch('setUserSettingsAction', this.userSettings);
       }

@@ -20,9 +20,9 @@
         >
           <template slot="items" slot-scope="props">
             <td class="text-xs-left">{{ props.item.name }}</td>
-            <td class="text-xs-left">{{ accepting(props.item) }}</td>
-            <td class="text-xs-left">{{ invoiceState(props.item.state) }}</td>
-            <td class="text-xs-right">{{ props.item.dateCreated }}</td>
+            <td class="text-xs-left">{{ props.item.accepting }}</td>
+            <td class="text-xs-left">{{ props.item.state | formatState }}</td>
+            <td class="text-xs-left">{{ props.item.dateCreated | formatDate }}</td>
             <td class="justify-center layout px-0">
               <v-btn icon class="mx-0" @click="viewInvoice(props.item)">
                 <v-icon color="teal">search</v-icon>
@@ -53,7 +53,8 @@
 </template>
 
 <script>
-import utils from '@/utils.js'
+// import moment from 'moment';
+
 export default {
   name: 'Dashboard',
   data () {
@@ -61,9 +62,9 @@ export default {
       headers: [
         {text: 'Name', value: 'name', align: 'left'},
         {text: 'Accepting', value: 'accepting', width: '60px'},
-        {text: 'Status', value: 'status', width: '200px'},
-        {text: 'Date Created', value: 'dateCreated', width: '120px'},
-        {text: 'Actions', sortable: false, width: '60px'}
+        {text: 'Status', value: 'state', width: '200px'},
+        {text: 'Date Created', value: 'dateCreated', width: '150px'},
+        {text: 'Actions', sortable: false, width: '80px'}
       ],
       deletedItem: {},
       deleteDialog: false
@@ -71,7 +72,22 @@ export default {
   },
   computed: {
     invoices () {
-      return this.$store.getters.invoices;
+      var invoices = this.$store.getters.invoices;
+      invoices.forEach((invoice) => {
+        let accepting = [];
+        invoice.accepting = '';
+        if (invoice.acceptBTC) {
+          accepting.push('BTC');
+        }
+        if (invoice.acceptLTC) {
+          accepting.push('LTC');
+        }
+        for (let code of accepting) {
+          invoice.accepting += code + ', ';
+        }
+        invoice.accepting = invoice.accepting.slice(0, -2);
+      });
+      return invoices;
     },
     formTitle () {
       return this.editedIndex === -1 ? 'New Invoice' : 'Edit Invoice'
@@ -89,9 +105,6 @@ export default {
     },
     viewInvoice (item) {
       this.$router.push({name: 'InvoicePage', params: {id: item.id}});
-    },
-    invoiceState (state) {
-      return utils.paymentStates[state];
     },
     accepting (item) {
       var btc = item.acceptBTC;
