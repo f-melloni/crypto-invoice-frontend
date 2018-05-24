@@ -155,11 +155,14 @@ export default {
       if (this.$refs.form.validate()) {
         var self = this;
         var send = function (payload) {
+          self.$store.dispatch('newInvoiceAction', false);
           axios.post(connectionString + '/api/invoices', payload, {
             withCredentials: true
           }).then(function (response) {
             if (response.status === 200) {
               self.$store.dispatch('getInvoiceAction', response.data);
+              self.$store.dispatch('newInvoiceAction', true);
+              self.$router.push({name: 'Dashboard'});
             }
           }).catch(function (error) {
             console.error('Post Error: ', error);

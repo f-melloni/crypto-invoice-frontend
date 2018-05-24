@@ -7,6 +7,7 @@ import { connectionString } from '@/appSettings.json';
 Vue.use(Vuex);
 export default new Vuex.Store({
   state: {
+    newInvoice: false, // new invoice snackbar on dashboard
     userId: '',
     displayName: '', // user's display name
     userSettings: {
@@ -20,6 +21,7 @@ export default new Vuex.Store({
     invoices: []
   },
   getters: {
+    newInvoice: state => state.newInvoice,
     invoices: state => state.invoices,
     userSettings: state => state.userSettings,
     userId: state => state.userId
@@ -53,9 +55,15 @@ export default new Vuex.Store({
       payload.forEach(invoice => {
         state.invoices.push(invoice);
       });
+    },
+    newInvoice: (state, payload) => {
+      state.newInvoice = payload;
     }
   },
   actions: {
+    newInvoiceAction: ({ commit }, payload) => {
+      commit('newInvoice', payload);
+    },
     getInvoiceAction: ({ commit }, payload) => {
       axios.get(connectionString + '/api/invoices/' + payload, {
         withCredentials: true

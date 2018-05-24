@@ -38,7 +38,7 @@
         </v-data-table>
       </v-flex>
     </v-layout>
-    <v-dialog v-model="deleteDialog" max-width="290">
+    <v-dialog v-model="deleteDialog" max-width="400">
       <v-card>
         <v-card-title class="headline">Delete Invoice?</v-card-title>
         <v-card-text class="text-xs-left">You are about to permanently delete the selected invoice <b>{{deletedItem.name}}</b>. Are you sure?</v-card-text>
@@ -49,6 +49,9 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
+    <v-snackbar top color="success" :timeout="5000" v-model="newInvoice">
+      New invoice successfully created!
+    </v-snackbar>
   </v-container>
 </template>
 
@@ -71,6 +74,14 @@ export default {
     };
   },
   computed: {
+    newInvoice: {
+      get () {
+        return this.$store.getters.newInvoice;
+      },
+      set (value) {
+        this.$store.dispatch('newInvoiceAction', value);
+      }
+    },
     invoices () {
       var invoices = this.$store.getters.invoices;
       invoices.forEach((invoice) => {
@@ -105,32 +116,6 @@ export default {
     },
     viewInvoice (item) {
       this.$router.push({name: 'InvoicePage', params: {id: item.id}});
-    },
-    accepting (item) {
-      var btc = item.acceptBTC;
-      var ltc = item.acceptLTC;
-      var eth = item.acceptETH;
-      var xmr = item.acceptXMR;
-      var accepting = [];
-      var acceptingResult = '';
-
-      if (btc) {
-        accepting.push('BTC');
-      }
-      if (ltc) {
-        accepting.push('LTC');
-      }
-      if (eth) {
-        accepting.push('ETH');
-      }
-      if (xmr) {
-        accepting.push('XMR');
-      }
-
-      for (let code of accepting) {
-        acceptingResult += code + ', ';
-      }
-      return acceptingResult.slice(0, -2);
     }
   }
 };
