@@ -4,10 +4,8 @@
       <v-flex xs12 md12 lg8 offset-lg2>
         <v-card>
           <v-card-title >
-            <v-avatar size="36px" :color="avatarColor">
-              <v-icon :title="paymentStatus" v-if="invoice.state === 1" dark>radio_button_unchecked</v-icon>
-              <v-icon :title="paymentStatus" v-if="invoice.state === 2" dark>access_time</v-icon>
-              <v-icon :title="paymentStatus" v-if="invoice.state === 3" dark>done_all</v-icon>
+            <v-avatar size="36px" :color="invoice.state | avatarColor">
+              <v-icon :title="paymentStatus" dark>{{ invoice.state | stateIcon }}</v-icon>
             </v-avatar>
             <h1>
               &nbsp;Invoice
@@ -18,7 +16,7 @@
               <v-flex xs12 md12 lg6  pr-2>
                 <v-text-field readonly label="Name" v-model="invoice.name"></v-text-field>
                 <v-text-field readonly label="Mail of Recipient" v-model="invoice.recipient"></v-text-field>
-                <v-text-field class="input-group--focused" :color="avatarColor" readonly label="Payment Status" v-model="paymentStatus"></v-text-field>
+                <v-text-field class="input-group--focused" :color="invoice.state | avatarColor" readonly label="Payment Status" :value="invoice.state | formatState"></v-text-field>
               </v-flex>
               <v-flex xs12 md12 lg6 pl-2>
                 <v-text-field readonly label="Payment Amount in Fiat" v-model="paymentAmount"></v-text-field>
@@ -66,13 +64,13 @@ export default {
     stateIcon () {
       var icon;
       switch (this.invoice.state) {
-        case 0:
+        case 1:
           icon = 'radio_button_unchecked';
           break;
-        case 1:
+        case 2:
           icon = 'access_time';
           break;
-        case 2:
+        case 3:
           icon = 'done_all';
           break;
       }
@@ -116,24 +114,6 @@ export default {
     },
     dateReceived () {
       return this.invoice.dateReceived === null ? ' ' : this.invoice.dateReceived;
-    },
-    avatarColor () {
-      var color;
-      switch (this.invoice.state) {
-        case 1:
-          color = 'grey';
-          break;
-        case 2:
-          color = 'orange';
-          break;
-        case 3:
-          color = 'success';
-          break;
-        default:
-          color = 'primary'
-          break;
-      }
-      return color;
     }
   },
   methods: {

@@ -32,6 +32,5 @@ export default new Router({
       component: InvoicePage,
       props: true
     }
-
   ]
 });

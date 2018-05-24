@@ -40,12 +40,12 @@
               <v-card-text>
                 <v-layout row wrap>
                   <v-flex xs12 lg6>
-                    <v-checkbox v-model="acceptCryptos" value="BTC" color="orange" label="BTC"></v-checkbox>
-                    <v-checkbox v-model="acceptCryptos" value="LTC" color="grey" label="LTC"></v-checkbox>
+                    <v-checkbox v-if="isCurrencySetUp('btc')" v-model="acceptCryptos" value="BTC" color="orange" label="BTC"></v-checkbox>
+                    <v-checkbox v-if="isCurrencySetUp('ltc')" v-model="acceptCryptos" value="LTC" color="grey" label="LTC"></v-checkbox>
                   </v-flex>
                   <v-flex xs12 lg6>
-                    <v-checkbox color="blue darken-3" label="ETH"></v-checkbox>
-                    <v-checkbox color="orange darken-3" label="XMR"></v-checkbox>
+                    <!--<v-checkbox :disabled="true" color="blue darken-3" label="ETH"></v-checkbox>
+                    <v-checkbox :disabled="true" color="orange darken-3" label="XMR"></v-checkbox>-->
                   </v-flex>
                   <v-flex class="text-xs-left"><small>Select at least one</small></v-flex>
                 </v-layout>
@@ -65,6 +65,7 @@
         </v-layout>
       </v-flex>
     </v-layout>
+    <!-- action buttons -->
     <v-layout row wrap>
       <v-flex xs12 md12 lg8 offset-lg2>
         <v-layout>
@@ -84,7 +85,10 @@
           </v-flex>
           <v-flex lg9>
             <v-card v-if="atLeastOneCheckboxAlert">
-              <v-alert type="error" outline :value="atLeastOneCheckboxAlert">At least one cryptocurrency must be selected.</v-alert>
+              <v-alert type="error" :value="atLeastOneCheckboxAlert">At least one cryptocurrency must be selected.</v-alert>
+            </v-card>
+            <v-card v-if="noSettings">
+              <v-alert type="error" :value="noSettings">No address set in account settings.</v-alert>
             </v-card>
           </v-flex>
         </v-layout>
@@ -93,6 +97,7 @@
     </v-form>
   </v-container>
 </template>
+
 <script>
 import axios from 'axios';
 import { connectionString } from '@/appSettings.json';
@@ -131,9 +136,19 @@ export default {
   computed: {
     fiatCurrencies () {
       return ['USD', 'EUR', 'CZK'];
+    },
+    noSettings () {
+      return !this.isCurrencySetUp('btc') && !this.isCurrencySetUp('ltc');
     }
   },
   methods: {
+    isCurrencySetUp (currency) {
+      var currencySetting = {
+        btc: 'btcxpub',
+        ltc: 'ltcxpub'
+      };
+      return this.$store.getters.userSettings[currencySetting[currency.toLowerCase()]].length > 0;
+    },
     openFileUpload () {
       document.getElementById('inputFile').click();
     },
@@ -206,5 +221,8 @@ export default {
 }
 .subCard {
   height: 240px !important;
+}
+label {
+  color: black !important;;
 }
 </style>

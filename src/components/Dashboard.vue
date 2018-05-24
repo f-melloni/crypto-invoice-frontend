@@ -1,5 +1,5 @@
 <template>
-  <v-container>
+  <v-container fluid>
     <v-layout row>
       <v-flex xs12 sm8 offset-sm2>
         <v-card class="mb-2">
@@ -19,9 +19,17 @@
         item-key="Id"
         >
           <template slot="items" slot-scope="props">
+            <td class="text-xs-left">
+              <v-avatar size="24px" :color="props.item.state | avatarColor">
+                <v-icon size="20px" dark>{{ props.item.state | stateIcon }}</v-icon>
+              </v-avatar>
+            </td>
             <td class="text-xs-left">{{ props.item.name }}</td>
+            <td class="text-xs-right">{{ props.item.fiatAmount + ' ' + props.item.fiatCurrencyCode }}</td>
             <td class="text-xs-left">{{ props.item.accepting }}</td>
-            <td class="text-xs-left">{{ props.item.state | formatState }}</td>
+            <td class="text-xs-left">
+              {{ props.item.state | formatState }}
+            </td>
             <td class="text-xs-left">{{ props.item.dateCreated | formatDate }}</td>
             <td class="justify-center layout px-0">
               <v-btn icon class="mx-0" @click="viewInvoice(props.item)">
@@ -63,9 +71,11 @@ export default {
   data () {
     return {
       headers: [
+        {value: 'state', align: 'left', width: '18px'},
         {text: 'Name', value: 'name', align: 'left'},
+        {text: 'Payment Amount', value: 'fiatAmount', align: 'left', width: '100px'},
         {text: 'Accepting', value: 'accepting', width: '60px'},
-        {text: 'Status', value: 'state', width: '200px'},
+        {text: 'Status', value: 'state', width: '220px'},
         {text: 'Date Created', value: 'dateCreated', width: '150px'},
         {text: 'Actions', sortable: false, width: '80px'}
       ],

@@ -1,16 +1,11 @@
 <template>
-  <v-container>
-    <div class="loading" v-if="!loaded">
-      <v-progress-circular :size="50" indeterminate color="primary"></v-progress-circular>
-    </div>
-    <v-layout justify-center>
-      <v-flex xs12 sm10 md8 lg6>
+  <v-container fluid grid-list-md>
+    <v-layout>
+      <v-flex xs12 lg8 offset-lg2>
       <v-card>
         <v-form ref="form" v-model="valid">
         <v-card-title>
-          <v-flex justify-center>
-            <h2>Account Settings</h2>
-          </v-flex>
+          <h1>Account Settings</h1>
         </v-card-title>
         <v-card-text>
           <v-text-field
@@ -18,18 +13,17 @@
             label="BTC XPUB"
             id="btcxpub"
             :rules="xpubRules"
-            v-model="userSettings.btcxpub"
-            :disabled="!loaded">
+            v-model="userSettings.btcxpub">
           </v-text-field>
           <v-text-field
             name="ltcxpub"
             label="LTC XPUB"
             id="ltcxpub"
             :rules="xpubRules"
-            v-model="userSettings.ltcxpub"
-            :disabled="!loaded">
+            v-model="userSettings.ltcxpub">
           </v-text-field>
-          <v-text-field
+          <!--
+            <v-text-field
             name="ethaccount"
             label="ETH Account"
             id="ethaccount"
@@ -61,22 +55,39 @@
             :rules="xmrViewKeyRules"
             :disabled="!loaded">
           </v-text-field>
+          -->
         </v-card-text>
-        <!--<v-divider></v-divider>-->
-        <v-card-actions>
-          <v-flex justify-center>
-            <v-btn
-              class="primary"
-              ref="saveBtn"
-              :disabled="!valid || !loaded"
-              @click="submit">Save Changes</v-btn>
-          </v-flex>
-        </v-card-actions>
         </v-form>
       </v-card>
     </v-flex>
     </v-layout>
 
+    <!-- action buttons -->
+    <v-layout row wrap>
+      <v-flex xs12 md12 lg8 offset-lg2>
+        <v-layout>
+          <v-flex xs3 align-content-center>
+            <v-card>
+              <v-card-text>
+                <v-layout row>
+                  <v-flex>
+                    <v-btn @click="submit" :disabled="!valid" color="primary">Submit</v-btn>
+                  </v-flex>
+                  <v-flex>
+                    <v-btn @click="reset" color="primary">Reset</v-btn>
+                  </v-flex>
+                </v-layout>
+              </v-card-text>
+            </v-card>
+          </v-flex>
+          <v-flex lg9>
+            <v-card>
+              <v-alert type="warning" class="black--text" :value="noSettings">Warning: You will not be able to create new invoices without setting at least one address</v-alert>
+            </v-card>
+          </v-flex>
+        </v-layout>
+      </v-flex>
+    </v-layout>
   </v-container>
 </template>
 <script>
@@ -85,6 +96,7 @@ export default {
   data () {
     return {
       valid: true,
+      noSettings: false,
       loaded: false,
       savedDialog: false,
       userSettings: {},
@@ -110,9 +122,17 @@ export default {
   computed: {},
   methods: {
     submit () {
+      if (!this.userSettings.btcxpub && !this.userSettings.ltcxpub) {
+        this.noSettings = true;
+        return;
+      }
       if (this.$refs.form.validate()) {
+        this.noSettings = false;
         this.$store.dispatch('setUserSettingsAction', this.userSettings);
       }
+    },
+    reset () {
+      this.$refs.form.reset();
     }
   }
 }
