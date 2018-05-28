@@ -125,7 +125,7 @@ export default {
       this.deleteDialog = false;
     },
     viewInvoice (item) {
-      this.$router.push({name: 'InvoicePage', params: {id: item.id}});
+      this.$router.push({name: 'InvoicePage', params: {invoiceGuid: item.invoiceGuid}});
     }
   }
 };

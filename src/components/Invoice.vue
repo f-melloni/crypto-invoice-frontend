@@ -55,7 +55,7 @@ export default {
     CryptoCard
   },
   name: 'Invoice',
-  props: ['id'],
+  props: ['invoiceGuid'],
   data () {
     return {
     }
@@ -80,7 +80,7 @@ export default {
       return utils.btc.decimals;
     },
     invoice () {
-      return this.$store.getters.invoices.find(i => i.id === this.$route.params.id);
+      return this.$store.getters.invoices.find(i => i.invoiceGuid === this.$route.params.invoiceGuid);
     },
     displayName () {
       return this.$store.state.displayName;

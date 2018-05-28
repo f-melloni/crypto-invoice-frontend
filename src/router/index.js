@@ -9,28 +9,27 @@ import InvoicePage from '@/components/Invoice'
 Vue.use(Router);
 
 export default new Router({
-  mode: 'history',
-  routes: [
-    {
-      path: '/',
-      name: 'Dashboard',
-      component: DashboardPage
-    },
-    {
-      path: '/paymentrequest',
-      name: 'PaymentRequestPage',
-      component: PaymentRequestPage
-    },
-    {
-      path: '/accountsettings',
-      name: 'AccountSettingsPage',
-      component: AccountSettingsPage
-    },
-    {
-      path: '/invoice/:id',
-      name: 'InvoicePage',
-      component: InvoicePage,
-      props: true
-    }
-  ]
+    mode: 'history',
+    routes: [{
+            path: '/',
+            name: 'Dashboard',
+            component: DashboardPage
+        },
+        {
+            path: '/paymentrequest',
+            name: 'PaymentRequestPage',
+            component: PaymentRequestPage
+        },
+        {
+            path: '/accountsettings',
+            name: 'AccountSettingsPage',
+            component: AccountSettingsPage
+        },
+        {
+            path: '/invoice/:invoiceGuid',
+            name: 'InvoicePage',
+            component: InvoicePage,
+            props: true
+        }
+    ]
 });
