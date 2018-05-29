@@ -1,12 +1,20 @@
 <template>
   <div id="app">
     <v-app>
-      <v-toolbar app dark color="indigo">
-        <span class="title ml-3 mr-5">Crypto Invoice</span>
+      <v-toolbar app color="indigo">
+        <span class="title ml-3 mr-5"><a @click="push('/')">Crypto Invoice</a></span>
         <v-spacer></v-spacer>
         <v-toolbar-items class="hidden-sm-and-down" v-for="item in navItems" :key="item.title">
-          <v-btn flat :to="item.path">{{item.title}}</v-btn>
+          <v-btn color="white" flat :to="item.path">{{item.title}}</v-btn>
         </v-toolbar-items>
+        <v-menu transition="slide-y-transition" bottom left attach offset-y offset-overflow nudge-left>
+          <v-toolbar-side-icon class="hidden-md-and-up white--text" slot="activator"></v-toolbar-side-icon>
+          <v-list>
+            <v-list-tile v-for="item in navItems" :key="item.title" @click="push(item.path)">
+              <v-list-tile-title :to="item.path">{{ item.title }}</v-list-tile-title>
+            </v-list-tile>
+          </v-list>
+        </v-menu>
       </v-toolbar>
       <v-content>
         <!--<img src="./assets/logo.png">-->
@@ -24,12 +32,13 @@ export default {
       { title: 'Account Settings', icon: 'account-settings-variant', path: '/accountsettings' },
       { title: 'Payment Request', icon: 'currency-btc', path: '/paymentrequest' },
       { title: 'Home', path: '/' }
-    ],
-    methods: {
-      menuClick: function (params) {
-      }
+    ]
+  }),
+  methods: {
+    push (path) {
+      this.$router.push(path);
     }
-  })
+  }
 }
 </script>
 
@@ -41,5 +50,18 @@ export default {
   text-align: center;
   color: #2c3e50;
   margin-top: 60px;
+}
+span.title > a {
+  color: white;
+  text-decoration: none;
+}
+span.title > a:link{
+  color: white;
+}
+span.title > a:visited{
+  color: white;
+}
+.menu__content{
+  left: -105px;
 }
 </style>

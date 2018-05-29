@@ -27,7 +27,7 @@ export default new Router({
       component: AccountSettingsPage
     },
     {
-      path: '/invoice/:id',
+      path: '/invoice/:invoiceGuid',
       name: 'InvoicePage',
       component: InvoicePage,
       props: true

@@ -11,7 +11,7 @@
           <v-card-text>
             <v-layout row wrap>
               <v-flex xs12 lg6 pr-2>
-                <v-text-field required label="Name" v-model="newInvoice.name" :rules="[rules.notEmpty]"></v-text-field>
+                <v-text-field required label="Invoice Name" v-model="newInvoice.name" :rules="[rules.notEmpty]"></v-text-field>
                 <v-text-field required label="Mail of Recipient" v-model="newInvoice.recipient" :rules="[rules.notEmpty]"></v-text-field>
               </v-flex>
               <v-flex xs12 lg6 pl-2>
@@ -74,10 +74,10 @@
               <v-card-text>
                 <v-layout row>
                   <v-flex>
-                    <v-btn @click="submit" :disabled="!valid" color="primary">Submit</v-btn>
+                    <v-btn @click="submit" :disabled="!valid" color="primary">Create</v-btn>
                   </v-flex>
                   <v-flex>
-                    <v-btn @click="reset" color="primary">Reset</v-btn>
+                    <v-btn @click="reset" color="primary">Clear</v-btn>
                   </v-flex>
                 </v-layout>
               </v-card-text>

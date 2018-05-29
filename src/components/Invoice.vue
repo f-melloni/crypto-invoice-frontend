@@ -5,7 +5,7 @@
         <v-card>
           <v-card-title >
             <v-avatar size="36px" :color="invoice.state | avatarColor">
-              <v-icon :title="paymentStatus" dark>{{ invoice.state | stateIcon }}</v-icon>
+              <v-icon :title="invoice.state | formatState" dark>{{ invoice.state | stateIcon }}</v-icon>
             </v-avatar>
             <h1>
               &nbsp;Invoice
@@ -14,17 +14,17 @@
           <v-card-text>
             <v-layout row wrap>
               <v-flex xs12 md12 lg6  pr-2>
-                <v-text-field readonly label="Name" v-model="invoice.name"></v-text-field>
-                <v-text-field readonly label="Mail of Recipient" v-model="invoice.recipient"></v-text-field>
-                <v-text-field class="input-group--focused" :color="invoice.state | avatarColor" readonly label="Payment Status" :value="invoice.state | formatState"></v-text-field>
+                <v-text-field @focus.capture="nocaret" readonly label="Invoice Name" v-model="invoice.name"></v-text-field>
+                <v-text-field @focus.capture="nocaret" readonly label="Mail of Recipient" v-model="invoice.recipient"></v-text-field>
+                <v-text-field @focus.capture="nocaret" class="input-group--focused" :color="invoice.state | avatarColor" readonly label="Payment Status" :value="invoice.state | formatState"></v-text-field>
               </v-flex>
               <v-flex xs12 md12 lg6 pl-2>
-                <v-text-field readonly label="Payment Amount in Fiat" v-model="paymentAmount"></v-text-field>
-                <v-text-field readonly label="Date Created" :value="invoice.dateCreated | formatDate"></v-text-field>
-                <v-text-field readonly label="Date Received" :value="invoice.dateReceived | formatDate"></v-text-field>
+                <v-text-field @focus.capture="nocaret" readonly label="Payment Amount in Fiat" v-model="paymentAmount"></v-text-field>
+                <v-text-field @focus.capture="nocaret" readonly label="Date Created" :value="invoice.dateCreated | formatDate"></v-text-field>
+                <v-text-field @focus.capture="nocaret" readonly label="Date Received" :value="invoice.dateReceived | formatDate"></v-text-field>
               </v-flex>
               <v-flex>
-                <v-text-field xs12 multi-line readonly label="Description" v-model="invoice.description"></v-text-field>
+                <v-text-field @focus.capture="nocaret" xs12 multi-line readonly label="Description" v-model="invoice.description"></v-text-field>
               </v-flex>
             </v-layout>
           </v-card-text>
@@ -49,38 +49,33 @@
 
 <script>
 import utils from '@/utils.js';
+import { connectionString } from '@/appSettings.json';
+import axios from 'axios';
 import CryptoCard from '@/components/CryptoCard';
 export default {
   components: {
     CryptoCard
   },
   name: 'Invoice',
-  props: ['id'],
+  props: ['invoiceGuid'],
   data () {
     return {
+      invoice: {}
+    }
+  },
+  mounted () {
+    // load from store if the user is logged, else call webapi
+    this.invoice = this.$store.getters.invoices.find(i => i.invoiceGuid === this.$route.params.invoiceGuid);
+    var self = this;
+    if (!this.invoice) {
+      axios.get(connectionString + '/api/invoices/' + this.invoiceGuid).then(({ data }) => {
+        self.invoice = data;
+      });
     }
   },
   computed: {
-    stateIcon () {
-      var icon;
-      switch (this.invoice.state) {
-        case 1:
-          icon = 'radio_button_unchecked';
-          break;
-        case 2:
-          icon = 'access_time';
-          break;
-        case 3:
-          icon = 'done_all';
-          break;
-      }
-      return icon;
-    },
     btcDecimals () {
       return utils.btc.decimals;
-    },
-    invoice () {
-      return this.$store.getters.invoices.find(i => i.id === this.$route.params.id);
     },
     displayName () {
       return this.$store.state.displayName;
@@ -92,31 +87,23 @@ export default {
       return this.invoice.fixedRateOnCreation ? 'Yes' : 'No';
     },
     paymentAmount () {
-      return this.invoice.fiatAmount + ' ' + this.invoice.fiatCurrencyCode;
-    },
-    paymentStatus () {
-      var status;
-      switch (this.invoice.state) {
-        case 1:
-          status = 'Pending';
-          break;
-        case 2:
-          status = 'Waiting for Confirmation';
-          break;
-        case 3:
-          status = 'Received and Confirmed';
-          break;
-        default:
-          status = 'UNKNOWN';
-          break;
+      if (this.invoice.fiatAmount && this.invoice.fiatCurrencyCode) {
+        return this.invoice.fiatAmount + ' ' + this.invoice.fiatCurrencyCode;
+      } else {
+        return '';
       }
-      return status;
     },
     dateReceived () {
       return this.invoice.dateReceived === null ? ' ' : this.invoice.dateReceived;
     }
   },
   methods: {
+    nocaret (e) {
+      e.stopImmediatePropagation();
+      e.stopPropagation();
+      e.preventDefault();
+      return false;
+    },
     renderCryptoCard (currencyCode) {
       if (!this.invoice.transactionCurrencyCode) {
         return true;
@@ -140,6 +127,8 @@ export default {
   }
 }
 </script>
-
 <style scoped>
+#tester {
+  color: red !important;
+}
 </style>

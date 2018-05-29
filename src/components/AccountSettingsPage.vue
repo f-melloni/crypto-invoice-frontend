@@ -1,7 +1,7 @@
 <template>
   <v-container fluid grid-list-md>
     <v-layout>
-      <v-flex xs12 lg8 offset-lg2>
+      <v-flex xs12 lg6 offset-lg3>
       <v-card>
         <v-form ref="form" v-model="valid">
         <v-card-title>
@@ -13,14 +13,16 @@
             label="BTC XPUB"
             id="btcxpub"
             :rules="xpubRules"
-            v-model="userSettings.btcxpub">
+            v-model="userSettings.btcxpub"
+            @change="validate">
           </v-text-field>
           <v-text-field
             name="ltcxpub"
             label="LTC XPUB"
             id="ltcxpub"
             :rules="xpubRules"
-            v-model="userSettings.ltcxpub">
+            v-model="userSettings.ltcxpub"
+            @change="validate">
           </v-text-field>
           <!--
             <v-text-field
@@ -64,26 +66,24 @@
 
     <!-- action buttons -->
     <v-layout row wrap>
-      <v-flex xs12 md12 lg8 offset-lg2>
+      <v-flex xs12 md12 lg6 offset-lg3>
         <v-layout>
-          <v-flex xs3 align-content-center>
+          <v-flex xs4 align-content-center>
             <v-card>
               <v-card-text>
                 <v-layout row>
                   <v-flex>
-                    <v-btn @click="submit" :disabled="!valid" color="primary">Submit</v-btn>
+                    <v-btn @click="submit" :disabled="!valid" color="primary">Save</v-btn>
                   </v-flex>
                   <v-flex>
-                    <v-btn @click="reset" color="primary">Reset</v-btn>
+                    <v-btn @click="reset" color="primary">Clear</v-btn>
                   </v-flex>
                 </v-layout>
               </v-card-text>
             </v-card>
           </v-flex>
-          <v-flex lg9>
-            <v-card>
-              <v-alert type="warning" class="black--text" :value="noSettings">Warning: You will not be able to create new invoices without setting at least one address</v-alert>
-            </v-card>
+          <v-flex lg8 py-0>
+            <v-alert type="warning" class="black--text" :value="noSettings">Please fill in at least one address field</v-alert>
           </v-flex>
         </v-layout>
       </v-flex>
@@ -97,7 +97,6 @@ export default {
     return {
       valid: true,
       noSettings: false,
-      loaded: false,
       savedDialog: false,
       userSettings: {},
       xpubRules: [
@@ -117,38 +116,34 @@ export default {
   },
   created () {
     this.userSettings = this.$store.getters.userSettings;
-    this.loaded = true;
   },
   computed: {},
   methods: {
+    validate () {
+      this.valid = this.$refs.form.validate()
+    },
     submit () {
       if (!this.userSettings.btcxpub && !this.userSettings.ltcxpub) {
         this.noSettings = true;
+        this.valid = false;
         return;
       }
       if (this.$refs.form.validate()) {
         this.noSettings = false;
         this.$store.dispatch('setUserSettingsAction', this.userSettings);
+        this.$store.dispatch('settingsChangedAction', this.userSettings);
+        this.$router.push('/');
       }
     },
     reset () {
-      this.$refs.form.reset();
+      // this.$refs.form.reset(); -> makes 'v' null thus throwing null reference exception
+      this.userSettings.btcxpub = '';
+      this.userSettings.ltcxpub = '';
     }
   }
 }
 </script>
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-  .loading {
-    position: fixed;
-    z-index: 999;
-    height: 2em;
-    width: 2em;
-    overflow: show;
-    margin: auto;
-    top: 0;
-    left: 0;
-    bottom: 0;
-    right: 0;
-  }
+
 </style>

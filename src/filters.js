@@ -2,7 +2,7 @@ import Vue from 'vue';
 import moment from 'moment';
 
 Vue.filter('formatDate', date => {
-  return moment(String(date)).format('DD.MM.YYYY hh:mm');
+  return date ? moment(String(date)).format('DD.MM.YYYY hh:mm') : null;
 });
 
 Vue.filter('formatState', state => {
