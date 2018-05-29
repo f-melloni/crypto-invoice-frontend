@@ -8,6 +8,7 @@ Vue.use(Vuex);
 export default new Vuex.Store({
   state: {
     newInvoice: false, // new invoice snackbar on dashboard
+    settingsChanged: false, // snackbar on dashboard
     userId: '',
     displayName: '', // user's display name
     userSettings: {
@@ -22,6 +23,7 @@ export default new Vuex.Store({
   },
   getters: {
     newInvoice: state => state.newInvoice,
+    settingsChanged: state => state.settingsChanged,
     invoices: state => state.invoices,
     userSettings: state => state.userSettings,
     userId: state => state.userId
@@ -45,7 +47,7 @@ export default new Vuex.Store({
       state.userSettings.xmrPublicViewKey = payload.xmrPublicViewKey;
     },
     deleteInvoice: (state, payload) => {
-      var toDelete = state.invoices.find(i => i.id === payload);
+      var toDelete = state.invoices.find(i => i.invoiceGuid === payload);
       if (toDelete) {
         var index = state.invoices.indexOf(toDelete);
         state.invoices.splice(index, 1);
@@ -58,11 +60,17 @@ export default new Vuex.Store({
     },
     newInvoice: (state, payload) => {
       state.newInvoice = payload;
+    },
+    settingsChanged: (state, payload) => {
+      state.settingsChanged = payload;
     }
   },
   actions: {
     newInvoiceAction: ({ commit }, payload) => {
       commit('newInvoice', payload);
+    },
+    settingsChangedAction: ({ commit }, payload) => {
+      commit('settingsChanged', payload);
     },
     getInvoiceAction: ({ commit }, payload) => {
       axios.get(connectionString + '/api/invoices/' + payload, {

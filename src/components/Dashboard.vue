@@ -1,7 +1,7 @@
 <template>
-  <v-container fluid>
-    <v-layout row>
-      <v-flex xs12 sm8 offset-sm2>
+  <v-container fluid grid-list-xs>
+    <v-layout row justify-center>
+      <v-flex xs12 md6>
         <v-card class="mb-2">
           <v-card-text>
             <h1>Invoices</h1>
@@ -9,14 +9,15 @@
         </v-card>
       </v-flex>
     </v-layout>
-    <v-layout row>
-      <v-flex xs12 sm8 offset-sm2>
+    <v-layout row justify-center>
+      <v-flex xs12 md6 hidden-sm-and-down>
         <v-data-table
         :headers="headers"
         :items="invoices"
         hide-actions
         class="elevation-1"
-        item-key="Id"
+        item-key="invoiceGuid"
+        :loading="isLoading"
         >
           <template slot="items" slot-scope="props">
             <td class="text-xs-left">
@@ -41,7 +42,7 @@
             </td>
           </template>
           <template slot="no-data">
-            <div>You currently have no invoices</div>
+            <div>Loading your invoices...</div>
           </template>
         </v-data-table>
       </v-flex>
@@ -60,6 +61,9 @@
     <v-snackbar top color="success" :timeout="5000" v-model="newInvoice">
       New invoice successfully created!
     </v-snackbar>
+    <v-snackbar top color="success" :timeout="5000" v-model="settingsChanged">
+      Settings successfully changed!
+    </v-snackbar>
   </v-container>
 </template>
 
@@ -70,18 +74,40 @@ export default {
   name: 'Dashboard',
   data () {
     return {
+      isLoading: true,
       headers: [
-        {value: 'state', align: 'left', width: '18px'},
-        {text: 'Name', value: 'name', align: 'left'},
-        {text: 'Payment Amount', value: 'fiatAmount', align: 'left', width: '100px'},
-        {text: 'Accepting', value: 'accepting', width: '60px'},
-        {text: 'Status', value: 'state', width: '220px'},
-        {text: 'Date Created', value: 'dateCreated', width: '150px'},
-        {text: 'Actions', sortable: false, width: '80px'}
+        {value: 'state', align: 'left'},
+        {text: 'Invoice Name', value: 'name', align: 'left'},
+        {text: 'Amount', value: 'fiatAmount', align: 'right'},
+        {text: 'Accepting', value: 'accepting'},
+        {text: 'Status', value: 'state'},
+        {text: 'Date Created', value: 'dateCreated'},
+        {text: 'Actions', sortable: false}
       ],
       deletedItem: {},
-      deleteDialog: false
+      deleteDialog: false,
+      invoices: []
     };
+  },
+  mounted () {
+    // load invoices and stop loading visuals
+    var invoices = this.$store.getters.invoices;
+    invoices.forEach((invoice) => {
+      let accepting = [];
+      invoice.accepting = '';
+      if (invoice.acceptBTC) {
+        accepting.push('BTC');
+      }
+      if (invoice.acceptLTC) {
+        accepting.push('LTC');
+      }
+      for (let code of accepting) {
+        invoice.accepting += code + ', ';
+      }
+      invoice.accepting = invoice.accepting.slice(0, -2);
+    });
+    this.invoices = invoices;
+    this.isLoading = false;
   },
   computed: {
     newInvoice: {
@@ -92,7 +118,15 @@ export default {
         this.$store.dispatch('newInvoiceAction', value);
       }
     },
-    invoices () {
+    settingsChanged: {
+      get () {
+        return this.$store.getters.settingsChanged;
+      },
+      set (value) {
+        this.$store.dispatch('settingsChangedAction', value);
+      }
+    },
+    /* invoices () {
       var invoices = this.$store.getters.invoices;
       invoices.forEach((invoice) => {
         let accepting = [];
@@ -109,7 +143,7 @@ export default {
         invoice.accepting = invoice.accepting.slice(0, -2);
       });
       return invoices;
-    },
+    }, */
     formTitle () {
       return this.editedIndex === -1 ? 'New Invoice' : 'Edit Invoice'
     }
@@ -120,7 +154,7 @@ export default {
       this.deleteDialog = true;
     },
     deleteItemConfirmed () {
-      this.$store.dispatch('deleteInvoiceAction', this.deletedItem.id);
+      this.$store.dispatch('deleteInvoiceAction', this.deletedItem.invoiceGuid);
       this.deletedItem = {};
       this.deleteDialog = false;
     },
