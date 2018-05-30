@@ -7,6 +7,7 @@ import { connectionString } from '@/appSettings.json';
 Vue.use(Vuex);
 export default new Vuex.Store({
   state: {
+    unlogged: false,
     newInvoice: false, // new invoice snackbar on dashboard
     settingsChanged: false, // snackbar on dashboard
     userId: '',
@@ -24,6 +25,7 @@ export default new Vuex.Store({
     errorMessage: ''
   },
   getters: {
+    unlogged: state => state.unlogged,
     newInvoice: state => state.newInvoice,
     settingsChanged: state => state.settingsChanged,
     invoices: state => state.invoices,
@@ -73,6 +75,9 @@ export default new Vuex.Store({
     },
     errorMessage: (state, payload) => {
       state.errorMessage = payload;
+    },
+    unlogged: (state, payload) => {
+      state.unlogged = payload;
     }
   },
   actions: {
@@ -92,12 +97,15 @@ export default new Vuex.Store({
         commit('getInvoice', response.data);
       }).catch(function (error) {
         console.error(error);
+        if (error.response.status === 401) {
+          window.location.replace(connectionString + '/Account/Login/');
+        }
       });
     },
     initStore: ({ commit }) => {
       axios.get(connectionString + '/api/invoices/init', {
         withCredentials: true
-      }).then(({ data }) => {
+      }).then(({ status, data }) => {
         commit('setUserId', data.userId);
         commit('setDisplayName', data.displayName);
         commit('loadInvoices', data.invoiceList);
@@ -107,10 +115,17 @@ export default new Vuex.Store({
           commit('setUserSettings', response.data);
         }).catch(function (error) {
           console.log(error);
+          if (error.response.status === 401) {
+            window.location.replace(connectionString + '/Account/Login/');
+          }
         });
-      }).catch(({message}) => {
+      }).catch((error) => {
+        commit('unlogged', true);
+        if (error.response.status === 401 && !window.location.pathname.includes('invoice')) {
+          window.location.replace(connectionString + '/Account/Login/');
+        }
         commit('errorOnSave', true);
-        commit('errorMessage', message);
+        commit('errorMessage', error.message);
       });
     },
     setUserIdAction: ({ commit }, payload) => {
@@ -133,9 +148,7 @@ export default new Vuex.Store({
         if (response.status === 200) {
           commit('setUserSettings', payload);
           commit('settingsChanged', true);
-          console.log('settings changed');
         } else {
-          console.log('response not 200');
           commit('errorOnSave', true);
           commit('errorMessage', response.data);
         }
@@ -145,6 +158,9 @@ export default new Vuex.Store({
           commit('errorMessage', error.response.data);
         } else {
           commit('errorMessage', error.message);
+        }
+        if (error.response.status === 401) {
+          window.location.replace(connectionString + '/Account/Login/');
         }
       });
     },

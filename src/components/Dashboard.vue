@@ -1,7 +1,7 @@
 <template>
   <v-container fluid grid-list-sm>
     <v-layout row justify-center>
-      <v-flex xs12 md8 lg8>
+      <v-flex xs12 md10 lg8>
         <v-card class="mb-2">
           <v-card-text>
             <h1>Invoices</h1>
@@ -54,7 +54,7 @@
         </v-data-iterator>
       </v-layout>
 
-      <v-flex xs12 md8 lg8 hidden-sm-and-down>
+      <v-flex xs12 md10 lg8 hidden-sm-and-down>
         <v-data-table
         :headers="headers"
         :items="invoices"
@@ -124,20 +124,13 @@ export default {
     return {
       isLoading: false,
       headers: [
-        {value: 'state', align: 'left', class: 'pr-0'},
+        {value: 'state', align: 'left', class: 'pr-0', width: '40px'},
         {text: 'Invoice Name', value: 'name', align: 'left'},
         {text: 'Amount', value: 'atAmount', align: 'right'},
-        {text: 'Accepting', value: 'accepting', class: 'pr-0'},
-        {text: 'Status', value: 'state'},
-        {text: 'Date Created', value: 'dateCreated'},
-        {text: 'Actions', sortable: false}
-      ],
-      headers_xs: [
-        {value: 'state', align: 'left', class: 'pr-0'},
-        {text: 'Invoice Name', value: 'name', align: 'left'},
-        {text: 'Amount', value: 'atAmount', align: 'right'},
-        {text: 'Date Created', value: 'dateCreated'},
-        {text: 'Actions', sortable: false}
+        {text: 'Accepting', value: 'accepting', class: 'pr-0', width: '140px'},
+        {text: 'Status', value: 'state', width: '120px'},
+        {text: 'Date Created', value: 'dateCreated', width: '150px'},
+        {text: 'Actions', sortable: false, width: '80px'}
       ],
       deletedItem: {},
       deleteDialog: false

@@ -179,6 +179,9 @@ export default {
             }
           }).catch(function (error) {
             console.error('Post Error: ', error);
+            if (error.response.status === 401) {
+              window.location.replace(connectionString + '/Account/Login/');
+            }
           });
         };
 

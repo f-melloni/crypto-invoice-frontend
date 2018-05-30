@@ -4,13 +4,13 @@
       <v-toolbar app color="indigo">
         <span class="title ml-3 mr-5"><a @click="push('/')">Crypto Invoice</a></span>
         <v-spacer></v-spacer>
-        <v-toolbar-items class="hidden-sm-and-down" v-for="item in navItems" :key="item.title">
+        <v-toolbar-items class="hidden-sm-and-down" v-for="item in menuItems" :key="item.title">
           <v-btn color="white" flat :to="item.path">{{item.title}}</v-btn>
         </v-toolbar-items>
         <v-menu transition="slide-y-transition" bottom left attach offset-y offset-overflow nudge-left>
           <v-toolbar-side-icon class="hidden-md-and-up white--text" slot="activator"></v-toolbar-side-icon>
           <v-list>
-            <v-list-tile v-for="item in navItems" :key="item.title" @click="push(item.path)">
+            <v-list-tile v-for="item in menuItems" :key="item.title" @click="push(item.path)">
               <v-list-tile-title :to="item.path">{{ item.title }}</v-list-tile-title>
             </v-list-tile>
           </v-list>
@@ -33,8 +33,20 @@ export default {
       { title: 'Payment Request', icon: 'currency-btc', path: '/paymentrequest' },
       { title: 'Account Settings', icon: 'account-settings-variant', path: '/accountsettings' },
       { title: 'Log Out', path: '/logout' }
+    ],
+    unauthNavItems: [
+      { title: 'Log In', path: '/Account/Login' }
     ]
   }),
+  computed: {
+    menuItems () {
+      if (this.$store.getters.unlogged === true) {
+        return this.unauthNavItems;
+      } else {
+        return this.navItems;
+      }
+    }
+  },
   methods: {
     push (path) {
       this.$router.push(path);
