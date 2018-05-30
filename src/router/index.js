@@ -5,6 +5,7 @@ import AccountSettingsPage from '@/components/AccountSettingsPage';
 import PaymentRequestPage from '@/components/PaymentRequestPage';
 import DashboardPage from '@/components/Dashboard';
 import InvoicePage from '@/components/Invoice'
+import LogoutPage from '@/components/Logout'
 
 Vue.use(Router);
 
@@ -31,6 +32,11 @@ export default new Router({
       name: 'InvoicePage',
       component: InvoicePage,
       props: true
+    },
+    {
+      path: '/logout',
+      name: 'Logout',
+      component: LogoutPage
     }
   ]
 });
