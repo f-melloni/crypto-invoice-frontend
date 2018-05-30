@@ -19,14 +19,18 @@ export default new Vuex.Store({
       xmrPrivateViewKey: '',
       xmrPublicViewKey: ''
     },
-    invoices: []
+    invoices: [],
+    errorOnSave: false,
+    errorMessage: ''
   },
   getters: {
     newInvoice: state => state.newInvoice,
     settingsChanged: state => state.settingsChanged,
     invoices: state => state.invoices,
     userSettings: state => state.userSettings,
-    userId: state => state.userId
+    userId: state => state.userId,
+    errorOnSave: state => state.errorOnSave,
+    errorMessage: state => state.errorMessage
   },
   mutations: {
     getInvoice: (state, payload) => {
@@ -63,9 +67,18 @@ export default new Vuex.Store({
     },
     settingsChanged: (state, payload) => {
       state.settingsChanged = payload;
+    },
+    errorOnSave: (state, payload) => {
+      state.errorOnSave = payload;
+    },
+    errorMessage: (state, payload) => {
+      state.errorMessage = payload;
     }
   },
   actions: {
+    errorOnSaveAction: ({ commit }, payload) => {
+      commit('errorOnSave', payload);
+    },
     newInvoiceAction: ({ commit }, payload) => {
       commit('newInvoice', payload);
     },
@@ -95,6 +108,9 @@ export default new Vuex.Store({
         }).catch(function (error) {
           console.log(error);
         });
+      }).catch(({message}) => {
+        commit('errorOnSave', true);
+        commit('errorMessage', message);
       });
     },
     setUserIdAction: ({ commit }, payload) => {
@@ -113,10 +129,23 @@ export default new Vuex.Store({
         xmrPublicViewKey: payload.xmrPublicViewKey
       }, {
         withCredentials: true
-      }).then(() => {
-        commit('setUserSettings', payload);
-      }).catch(function (error) {
-        console.error(error);
+      }).then((response) => {
+        if (response.status === 200) {
+          commit('setUserSettings', payload);
+          commit('settingsChanged', true);
+          console.log('settings changed');
+        } else {
+          console.log('response not 200');
+          commit('errorOnSave', true);
+          commit('errorMessage', response.data);
+        }
+      }).catch((error) => {
+        commit('errorOnSave', true);
+        if (error.response) {
+          commit('errorMessage', error.response.data);
+        } else {
+          commit('errorMessage', error.message);
+        }
       });
     },
     deleteInvoiceAction: ({ commit, state }, payload) => {

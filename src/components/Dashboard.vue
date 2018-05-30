@@ -1,7 +1,7 @@
 <template>
-  <v-container fluid grid-list-xs>
+  <v-container fluid grid-list-sm>
     <v-layout row justify-center>
-      <v-flex xs12 md6>
+      <v-flex xs12 md8 lg6>
         <v-card class="mb-2">
           <v-card-text>
             <h1>Invoices</h1>
@@ -10,7 +10,49 @@
       </v-flex>
     </v-layout>
     <v-layout row justify-center>
-      <v-flex xs12 md6 hidden-sm-and-down>
+      <!-- small devices render data iterator instead of data table -->
+      <v-data-iterator
+        :items="invoices"
+        content-tag="v-layout"
+        row wrap
+        hidden-sm-and-up
+      >
+        <v-flex slot="item" slot-scope="props" xs12>
+          <v-card>
+            <v-list dense>
+              <v-list-tile>
+                <v-list-tile-content>Invoice Name:</v-list-tile-content>
+                <v-list-tile-content class="align-end">
+                  <b>{{ props.item.name }}
+                  <v-avatar size="20px" :color="props.item.state | avatarColor">
+                    <v-icon size="16px" dark>{{ props.item.state | stateIcon }}</v-icon>
+                  </v-avatar></b>
+                </v-list-tile-content>
+              </v-list-tile>
+              <v-divider></v-divider>
+              <v-list-tile>
+                <v-list-tile-content>Status:</v-list-tile-content>
+                <v-list-tile-content class="align-end">{{ props.item.state | formatState }}</v-list-tile-content>
+              </v-list-tile>
+              <v-divider></v-divider>
+              <v-list-tile>
+                <v-list-tile-content>Payment Amount:</v-list-tile-content>
+                <v-list-tile-content class="align-end">{{ props.item.fiatAmount + ' ' + props.item.fiatCurrencyCode }}</v-list-tile-content>
+              </v-list-tile>
+              <v-divider></v-divider>
+              <v-list-tile>
+                <v-list-tile-content>Date Created</v-list-tile-content>
+                <v-list-tile-content class="align-end">{{ props.item.dateCreated | formatDate }}</v-list-tile-content>
+              </v-list-tile>
+            </v-list>
+          </v-card>
+        </v-flex>
+        <v-flex slot="no-data">
+          Loading your invoices...
+        </v-flex>
+      </v-data-iterator>
+
+      <v-flex xs12 md8 lg6 hidden-md-and-down>
         <v-data-table
         :headers="headers"
         :items="invoices"
@@ -20,14 +62,14 @@
         :loading="isLoading"
         >
           <template slot="items" slot-scope="props">
-            <td class="text-xs-left">
+            <td class="text-xs-left pr-0">
               <v-avatar size="24px" :color="props.item.state | avatarColor">
                 <v-icon size="20px" dark>{{ props.item.state | stateIcon }}</v-icon>
               </v-avatar>
             </td>
             <td class="text-xs-left">{{ props.item.name }}</td>
             <td class="text-xs-right">{{ props.item.fiatAmount + ' ' + props.item.fiatCurrencyCode }}</td>
-            <td class="text-xs-left">{{ props.item.accepting }}</td>
+            <td class="text-xs-left pr-0">{{ props.item.accepting }}</td>
             <td class="text-xs-left">
               {{ props.item.state | formatState }}
             </td>
@@ -64,6 +106,10 @@
     <v-snackbar top color="success" :timeout="5000" v-model="settingsChanged">
       Settings successfully changed!
     </v-snackbar>
+    <v-snackbar top color="error" v-model="errorOnSave">
+      Something happened: {{ errorMessage }}
+      <v-btn flat @click="errorOnSave = false">Close</v-btn>
+    </v-snackbar>
   </v-container>
 </template>
 
@@ -74,22 +120,28 @@ export default {
   name: 'Dashboard',
   data () {
     return {
-      isLoading: true,
+      isLoading: false,
       headers: [
-        {value: 'state', align: 'left'},
+        {value: 'state', align: 'left', class: 'pr-0'},
         {text: 'Invoice Name', value: 'name', align: 'left'},
         {text: 'Amount', value: 'fiatAmount', align: 'right'},
-        {text: 'Accepting', value: 'accepting'},
+        {text: 'Accepting', value: 'accepting', class: 'pr-0'},
         {text: 'Status', value: 'state'},
         {text: 'Date Created', value: 'dateCreated'},
         {text: 'Actions', sortable: false}
       ],
+      headers_xs: [
+        {value: 'state', align: 'left', class: 'pr-0'},
+        {text: 'Invoice Name', value: 'name', align: 'left'},
+        {text: 'Amount', value: 'fiatAmount', align: 'right'},
+        {text: 'Date Created', value: 'dateCreated'},
+        {text: 'Actions', sortable: false}
+      ],
       deletedItem: {},
-      deleteDialog: false,
-      invoices: []
+      deleteDialog: false
     };
   },
-  mounted () {
+  /* mounted () {
     // load invoices and stop loading visuals
     var invoices = this.$store.getters.invoices;
     invoices.forEach((invoice) => {
@@ -108,8 +160,19 @@ export default {
     });
     this.invoices = invoices;
     this.isLoading = false;
-  },
+  }, */
   computed: {
+    errorOnSave: {
+      get () {
+        return this.$store.getters.errorOnSave;
+      },
+      set (value) {
+        this.$store.dispatch('errorOnSaveAction', value);
+      }
+    },
+    errorMessage () {
+      return this.$store.getters.errorMessage;
+    },
     newInvoice: {
       get () {
         return this.$store.getters.newInvoice;
@@ -126,7 +189,7 @@ export default {
         this.$store.dispatch('settingsChangedAction', value);
       }
     },
-    /* invoices () {
+    invoices () {
       var invoices = this.$store.getters.invoices;
       invoices.forEach((invoice) => {
         let accepting = [];
@@ -143,7 +206,7 @@ export default {
         invoice.accepting = invoice.accepting.slice(0, -2);
       });
       return invoices;
-    }, */
+    },
     formTitle () {
       return this.editedIndex === -1 ? 'New Invoice' : 'Edit Invoice'
     }
@@ -166,5 +229,6 @@ export default {
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped>
+<style>
+
 </style>

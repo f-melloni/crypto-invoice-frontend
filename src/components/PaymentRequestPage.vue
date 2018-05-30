@@ -1,20 +1,20 @@
 <template>
-  <v-container fluid grid-list-md>
+  <v-container fluid grid-list-sm>
     <v-form ref="form" v-model="valid">
     <!--Main Options-->
-    <v-layout row wrap>
-      <v-flex xs12 md12 lg8 offset-lg2>
+    <v-layout row wrap justify-center>
+      <v-flex xs12 md12 lg6>
         <v-card>
           <v-card-title>
             <h1>New Invoice</h1>
           </v-card-title>
           <v-card-text>
             <v-layout row wrap>
-              <v-flex xs12 lg6 pr-2>
+              <v-flex xs12 lg6>
                 <v-text-field required label="Invoice Name" v-model="newInvoice.name" :rules="[rules.notEmpty]"></v-text-field>
-                <v-text-field required label="Mail of Recipient" v-model="newInvoice.recipient" :rules="[rules.notEmpty]"></v-text-field>
+                <v-text-field required label="Mail of Recipient" v-model="newInvoice.recipient" :rules="[rules.notEmpty, rules.email]"></v-text-field>
               </v-flex>
-              <v-flex xs12 lg6 pl-2>
+              <v-flex xs12 lg6>
                 <v-text-field required label="Payment Amount in Fiat" v-model="newInvoice.fiatAmount" :rules="[rules.notEmpty, rules.amount]"></v-text-field>
                 <v-select required label="Select Fiat Currency" :items="fiatCurrencies" v-model="newInvoice.fiatCurrencyCode" :rules="[rules.notEmpty]"></v-select>
               </v-flex>
@@ -30,25 +30,23 @@
       </v-flex>
     </v-layout>
 
-    <v-layout row wrap>
+    <v-layout row wrap justify-center>
     <!--Crypto Options-->
-      <v-flex xs12 md12 lg8 offset-lg2>
-        <v-layout xs12>
+      <v-flex xs12 md12 lg6>
+        <v-layout row wrap>
           <v-flex xs12 sm6>
             <v-card class="subCard">
-              <v-card-title><h2>Select Cryptocurrencies</h2></v-card-title>
+              <v-card-title><h2>Cryptocurrencies</h2></v-card-title>
               <v-card-text>
                 <v-layout row wrap>
-                  <v-flex xs12 lg6>
-                    <v-checkbox v-if="isCurrencySetUp('btc')" v-model="acceptCryptos" value="BTC" color="orange" label="BTC"></v-checkbox>
-                    <v-checkbox v-if="isCurrencySetUp('ltc')" v-model="acceptCryptos" value="LTC" color="grey" label="LTC"></v-checkbox>
-                  </v-flex>
-                  <v-flex xs12 lg6>
-                    <!--<v-checkbox :disabled="true" color="blue darken-3" label="ETH"></v-checkbox>
-                    <v-checkbox :disabled="true" color="orange darken-3" label="XMR"></v-checkbox>-->
-                  </v-flex>
-                  <v-flex class="text-xs-left"><small>Select at least one</small></v-flex>
+                  <v-checkbox v-if="isCurrencySetUp('btc')" v-model="acceptCryptos" value="BTC" color="orange" label="BTC"></v-checkbox>
+                  <v-checkbox v-if="isCurrencySetUp('ltc')" v-model="acceptCryptos" value="LTC" color="grey" label="LTC"></v-checkbox>
                 </v-layout>
+                <v-layout row wrap>
+                  <!--<v-checkbox :disabled="true" color="blue darken-3" label="ETH"></v-checkbox>
+                  <v-checkbox :disabled="true" color="orange darken-3" label="XMR"></v-checkbox>-->
+                </v-layout>
+                <v-flex class="text-xs-left"><small>Select at least one</small></v-flex>
               </v-card-text>
             </v-card>
           </v-flex>
@@ -66,10 +64,10 @@
       </v-flex>
     </v-layout>
     <!-- action buttons -->
-    <v-layout row wrap>
-      <v-flex xs12 md12 lg8 offset-lg2>
+    <v-layout row wrap justify-center>
+      <v-flex xs12 md12 lg6>
         <v-layout>
-          <v-flex xs3 align-content-center>
+          <v-flex xs12 md8 lg4 align-content-center>
             <v-card>
               <v-card-text>
                 <v-layout row>
@@ -83,7 +81,7 @@
               </v-card-text>
             </v-card>
           </v-flex>
-          <v-flex lg9>
+          <v-flex lg8>
             <v-card v-if="atLeastOneCheckboxAlert">
               <v-alert type="error" :value="atLeastOneCheckboxAlert">At least one cryptocurrency must be selected.</v-alert>
             </v-card>
@@ -220,7 +218,7 @@ export default {
   display: none;
 }
 .subCard {
-  height: 240px !important;
+  height: 170px !important;
 }
 label {
   color: black !important;;

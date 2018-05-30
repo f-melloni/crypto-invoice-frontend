@@ -12,6 +12,9 @@ import 'cryptocoins-icons/webfont/cryptocoins.css';
 // import { connectionString } from './appSettings.json';
 import './filters.js';
 import colors from 'vuetify/es5/util/colors';
+import VueQrCode from '@xkeshi/vue-qrcode';
+
+Vue.component('qrcode', VueQrCode);
 
 Vue.use(Vuetify, {
   theme: {

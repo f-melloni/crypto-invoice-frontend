@@ -1,7 +1,7 @@
 <template>
-  <v-container fluid grid-list-md>
-    <v-layout>
-      <v-flex xs12 lg6 offset-lg3>
+  <v-container fluid grid-list-sm >
+    <v-layout justify-center>
+      <v-flex xs12 md8 lg6>
       <v-card>
         <v-form ref="form" v-model="valid">
         <v-card-title>
@@ -65,10 +65,10 @@
     </v-layout>
 
     <!-- action buttons -->
-    <v-layout row wrap>
-      <v-flex xs12 md12 lg6 offset-lg3>
-        <v-layout>
-          <v-flex xs4 align-content-center>
+    <v-layout row wrap justify-center>
+      <v-flex xs12 md8 lg6>
+        <v-layout row wrap>
+          <v-flex xs12 md6 lg5 align-content-center>
             <v-card>
               <v-card-text>
                 <v-layout row>
@@ -82,7 +82,7 @@
               </v-card-text>
             </v-card>
           </v-flex>
-          <v-flex lg8 py-0>
+          <v-flex xs12 md6 lg6 py-0>
             <v-alert type="warning" class="black--text" :value="noSettings">Please fill in at least one address field</v-alert>
           </v-flex>
         </v-layout>
@@ -131,7 +131,6 @@ export default {
       if (this.$refs.form.validate()) {
         this.noSettings = false;
         this.$store.dispatch('setUserSettingsAction', this.userSettings);
-        this.$store.dispatch('settingsChangedAction', this.userSettings);
         this.$router.push('/');
       }
     },
@@ -145,5 +144,4 @@ export default {
 </script>
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-
 </style>

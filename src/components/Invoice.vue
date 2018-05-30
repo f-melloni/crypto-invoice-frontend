@@ -1,7 +1,7 @@
 <template>
-  <v-container fluid grid-list-md>
-    <v-layout row wrap><!--Top card-->
-      <v-flex xs12 md12 lg8 offset-lg2>
+  <v-container fluid grid-list-sm>
+    <v-layout row wrap justify-center><!--Top card-->
+      <v-flex xs12 md12 lg6>
         <v-card>
           <v-card-title >
             <v-avatar size="36px" :color="invoice.state | avatarColor">
@@ -13,12 +13,12 @@
           </v-card-title>
           <v-card-text>
             <v-layout row wrap>
-              <v-flex xs12 md12 lg6  pr-2>
+              <v-flex xs12 md12 lg6>
                 <v-text-field @focus.capture="nocaret" readonly label="Invoice Name" v-model="invoice.name"></v-text-field>
                 <v-text-field @focus.capture="nocaret" readonly label="Mail of Recipient" v-model="invoice.recipient"></v-text-field>
                 <v-text-field @focus.capture="nocaret" class="input-group--focused" :color="invoice.state | avatarColor" readonly label="Payment Status" :value="invoice.state | formatState"></v-text-field>
               </v-flex>
-              <v-flex xs12 md12 lg6 pl-2>
+              <v-flex xs12 md12 lg6>
                 <v-text-field @focus.capture="nocaret" readonly label="Payment Amount in Fiat" v-model="paymentAmount"></v-text-field>
                 <v-text-field @focus.capture="nocaret" readonly label="Date Created" :value="invoice.dateCreated | formatDate"></v-text-field>
                 <v-text-field @focus.capture="nocaret" readonly label="Date Received" :value="invoice.dateReceived | formatDate"></v-text-field>
@@ -32,8 +32,8 @@
       </v-flex>
     </v-layout>
 
-    <v-layout row wrap><!--Crypto Cards-->
-      <v-flex xs12 md12 offset-lg2 lg8>
+    <v-layout row wrap justify-center><!--Crypto Cards-->
+      <v-flex xs12 md12 lg6>
         <v-layout row wrap>
           <v-flex xs12 md12 lg6 v-if="invoice.acceptBTC">
             <crypto-card v-if="renderCryptoCard('btc')" currencyCode="btc" color="orange" :invoice="invoice"></crypto-card>
