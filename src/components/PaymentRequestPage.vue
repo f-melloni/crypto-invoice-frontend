@@ -172,7 +172,7 @@ export default {
           axios.post(connectionString + '/api/invoices', payload, {
             withCredentials: true
           }).then(function (response) {
-            if (response.status === 200) {
+            if (response.status === 201) {
               self.$store.dispatch('getInvoiceAction', response.data);
               self.$store.dispatch('newInvoiceAction', true);
               self.$router.push({name: 'Dashboard'});
@@ -187,8 +187,7 @@ export default {
           Description: this.newInvoice.description,
           FiatAmount: this.newInvoice.fiatAmount,
           FiatCurrencyCode: this.newInvoice.fiatCurrencyCode,
-          AcceptBTC: this.acceptCryptos.includes('BTC'),
-          AcceptLTC: this.acceptCryptos.includes('LTC'),
+          Accept: this.acceptCryptos,
           Recipient: this.newInvoice.recipient
         };
         // Send with file

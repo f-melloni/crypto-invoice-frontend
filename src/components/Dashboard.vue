@@ -1,7 +1,7 @@
 <template>
   <v-container fluid grid-list-sm>
     <v-layout row justify-center>
-      <v-flex xs12 md8 lg6>
+      <v-flex xs12 md8 lg8>
         <v-card class="mb-2">
           <v-card-text>
             <h1>Invoices</h1>
@@ -11,48 +11,50 @@
     </v-layout>
     <v-layout row justify-center>
       <!-- small devices render data iterator instead of data table -->
-      <v-data-iterator
-        :items="invoices"
-        content-tag="v-layout"
-        row wrap
-        hidden-sm-and-up
-      >
-        <v-flex slot="item" slot-scope="props" xs12>
-          <v-card>
-            <v-list dense>
-              <v-list-tile>
-                <v-list-tile-content>Invoice Name:</v-list-tile-content>
-                <v-list-tile-content class="align-end">
-                  <b>{{ props.item.name }}
-                  <v-avatar size="20px" :color="props.item.state | avatarColor">
-                    <v-icon size="16px" dark>{{ props.item.state | stateIcon }}</v-icon>
-                  </v-avatar></b>
-                </v-list-tile-content>
-              </v-list-tile>
-              <v-divider></v-divider>
-              <v-list-tile>
-                <v-list-tile-content>Status:</v-list-tile-content>
-                <v-list-tile-content class="align-end">{{ props.item.state | formatState }}</v-list-tile-content>
-              </v-list-tile>
-              <v-divider></v-divider>
-              <v-list-tile>
-                <v-list-tile-content>Payment Amount:</v-list-tile-content>
-                <v-list-tile-content class="align-end">{{ props.item.fiatAmount + ' ' + props.item.fiatCurrencyCode }}</v-list-tile-content>
-              </v-list-tile>
-              <v-divider></v-divider>
-              <v-list-tile>
-                <v-list-tile-content>Date Created</v-list-tile-content>
-                <v-list-tile-content class="align-end">{{ props.item.dateCreated | formatDate }}</v-list-tile-content>
-              </v-list-tile>
-            </v-list>
-          </v-card>
-        </v-flex>
-        <v-flex slot="no-data">
-          Loading your invoices...
-        </v-flex>
-      </v-data-iterator>
+      <v-layout hidden-md-and-up>
+        <v-data-iterator
+          :items="invoices"
+          content-tag="v-layout"
+          row wrap
+          class="px-1"
+        >
+          <v-flex slot="item" slot-scope="props" xs12>
+            <v-card>
+              <v-list dense>
+                <v-list-tile>
+                  <v-list-tile-content>Invoice Name:</v-list-tile-content>
+                  <v-list-tile-content class="align-end">
+                    <b>{{ props.item.name }}
+                    <v-avatar size="20px" :color="props.item.state | avatarColor">
+                      <v-icon size="16px" dark>{{ props.item.state | stateIcon }}</v-icon>
+                    </v-avatar></b>
+                  </v-list-tile-content>
+                </v-list-tile>
+                <v-divider></v-divider>
+                <v-list-tile>
+                  <v-list-tile-content>Status:</v-list-tile-content>
+                  <v-list-tile-content class="align-end">{{ props.item.state | formatState }}</v-list-tile-content>
+                </v-list-tile>
+                <v-divider></v-divider>
+                <v-list-tile>
+                  <v-list-tile-content>Payment Amount:</v-list-tile-content>
+                  <v-list-tile-content class="align-end">{{ props.item.atAmount + ' ' + props.item.atCurrencyCode }}</v-list-tile-content>
+                </v-list-tile>
+                <v-divider></v-divider>
+                <v-list-tile>
+                  <v-list-tile-content>Date Created</v-list-tile-content>
+                  <v-list-tile-content class="align-end">{{ props.item.dateCreated | formatDate }}</v-list-tile-content>
+                </v-list-tile>
+              </v-list>
+            </v-card>
+          </v-flex>
+          <v-flex slot="no-data">
+            Loading your invoices...
+          </v-flex>
+        </v-data-iterator>
+      </v-layout>
 
-      <v-flex xs12 md8 lg6 hidden-md-and-down>
+      <v-flex xs12 md8 lg8 hidden-sm-and-down>
         <v-data-table
         :headers="headers"
         :items="invoices"
@@ -95,7 +97,7 @@
         <v-card-text class="text-xs-left">You are about to permanently delete the selected invoice <b>{{deletedItem.name}}</b>. Are you sure?</v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn color="red darken-1" flat="flat" @click.native="deleteItemConfirmed()">Delete</v-btn>
+          <v-btn color="red darken-1" flat="flat" @click.native="deleteItemConrmed()">Delete</v-btn>
           <v-btn color="green darken-1" flat="flat" @click.native="deleteDialog = false">Cancel</v-btn>
         </v-card-actions>
       </v-card>
@@ -124,7 +126,7 @@ export default {
       headers: [
         {value: 'state', align: 'left', class: 'pr-0'},
         {text: 'Invoice Name', value: 'name', align: 'left'},
-        {text: 'Amount', value: 'fiatAmount', align: 'right'},
+        {text: 'Amount', value: 'atAmount', align: 'right'},
         {text: 'Accepting', value: 'accepting', class: 'pr-0'},
         {text: 'Status', value: 'state'},
         {text: 'Date Created', value: 'dateCreated'},
@@ -133,7 +135,7 @@ export default {
       headers_xs: [
         {value: 'state', align: 'left', class: 'pr-0'},
         {text: 'Invoice Name', value: 'name', align: 'left'},
-        {text: 'Amount', value: 'fiatAmount', align: 'right'},
+        {text: 'Amount', value: 'atAmount', align: 'right'},
         {text: 'Date Created', value: 'dateCreated'},
         {text: 'Actions', sortable: false}
       ],
@@ -216,7 +218,7 @@ export default {
       this.deletedItem = item;
       this.deleteDialog = true;
     },
-    deleteItemConfirmed () {
+    deleteItemConrmed () {
       this.$store.dispatch('deleteInvoiceAction', this.deletedItem.invoiceGuid);
       this.deletedItem = {};
       this.deleteDialog = false;
@@ -230,5 +232,7 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style>
-
+  .table__overflow {
+    overflow: hidden;
+  }
 </style>
