@@ -14,7 +14,10 @@
     "build": "node build/build.js"
   },
   "dependencies": {
+    "@xkeshi/vue-qrcode": "^0.3.0",
     "axios": "^0.18.0",
+    "browser-cookies": "^1.2.0",
+    "cookies": "^0.7.1",
     "cryptocoins-icons": "^2.7.0",
     "material-design-icons-iconfont": "^3.0.3",
     "moment": "^2.22.1",

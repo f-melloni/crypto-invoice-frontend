@@ -16,7 +16,7 @@
           </v-list>
         </v-menu>
       </v-toolbar>
-      <v-content>
+      <v-content class="pt-3">
         <!--<img src="./assets/logo.png">-->
         <router-view/>
       </v-content>
@@ -29,14 +29,20 @@ export default {
   name: 'App',
   data: () => ({
     navItems: [
-      { title: 'Account Settings', icon: 'account-settings-variant', path: '/accountsettings' },
+      { title: 'Invoices', path: '/' },
       { title: 'Payment Request', icon: 'currency-btc', path: '/paymentrequest' },
-      { title: 'Home', path: '/' }
+      { title: 'Account Settings', icon: 'account-settings-variant', path: '/accountsettings' },
+      { title: 'Log Out', path: '/logout' }
     ]
   }),
   methods: {
     push (path) {
       this.$router.push(path);
+    }
+  },
+  created () {
+    if (process.env.NODE_ENV === 'development') {
+      console.log('Running development instance!');
     }
   }
 }
@@ -61,7 +67,7 @@ span.title > a:link{
 span.title > a:visited{
   color: white;
 }
-.menu__content{
-  left: -105px;
+main.content {
+  padding: none;
 }
 </style>

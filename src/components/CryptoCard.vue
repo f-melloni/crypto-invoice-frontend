@@ -8,7 +8,7 @@
         &nbsp;{{ccUp}}
       </h2>
       <v-spacer></v-spacer>
-      <v-btn dark v-if="invoice.state !== 1" round :color="stateColor" @click="viewTransaction()"><v-icon>{{stateIcon}}</v-icon>&nbsp;View in Explorer</v-btn>
+      <v-btn dark v-if="invoice.state !== 1" round :color="invoice.state | avatarColor" @click="viewTransaction()"><v-icon>{{invoice.state | stateIcon}}</v-icon>&nbsp;View in Explorer</v-btn>
     </v-card-title>
     <v-card-text>
       <v-text-field readonly label="Address" v-model="invoice[currencyCode.toLowerCase() + 'Address']"></v-text-field>
@@ -21,6 +21,7 @@
         </v-flex>
       </v-layout>
       <v-text-field v-if="renderTransaction()" readonly label="Transaction ID" :value="invoice.transactionId"></v-text-field>
+      <qrcode :value="qrCode" :options="{size: 200}"></qrcode>
     </v-card-text>
   </v-card>
 </template>
@@ -38,7 +39,10 @@ export default{
   },
   computed: {
     inCrypto () {
-      return (this.invoice.fiatAmount / this.newFixER).toFixed(this.decimals) + ' ' + this.ccUp;
+      return this.cryptoValue + ' ' + this.ccUp;
+    },
+    cryptoValue () {
+      return (this.invoice.fiatAmount / this.newFixER).toFixed(this.decimals);
     },
     decimals () {
       return utils[this.currencyCode.toLowerCase()].decimals;
@@ -49,38 +53,17 @@ export default{
     newFixER () {
       return this.invoice['newFixER_' + this.ccUp];
     },
-    stateColor () {
-      var stateColor;
-      switch (this.invoice.state) {
-        case 1:
-          stateColor = 'grey';
+    qrCode () {
+      var uri;
+      switch (this.currencyCode.toLowerCase()) {
+        case 'btc':
+          uri = 'bitcoin:' + this.invoice.btcAddress + '?amount=' + this.cryptoValue;
           break;
-        case 2:
-          stateColor = 'orange';
-          break;
-        case 3:
-          stateColor = 'success';
-          break;
-        default:
-          stateColor = 'primary'
+        case 'ltc':
+          uri = 'litecoin:' + this.invoice.ltcAddress + '?amount=' + this.cryptoValue;
           break;
       }
-      return stateColor;
-    },
-    stateIcon () {
-      var icon;
-      switch (this.invoice.state) {
-        case 1:
-          icon = 'radio_button_unchecked';
-          break;
-        case 2:
-          icon = 'access_time';
-          break;
-        case 3:
-          icon = 'done_all';
-          break;
-      }
-      return icon;
+      return uri;
     }
   },
   methods: {
