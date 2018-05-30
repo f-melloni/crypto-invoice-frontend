@@ -39,8 +39,7 @@
               <v-card-title><h2>Cryptocurrencies</h2></v-card-title>
               <v-card-text>
                 <v-layout row wrap>
-                  <v-checkbox v-if="isCurrencySetUp('btc')" v-model="acceptCryptos" value="BTC" color="orange" label="BTC"></v-checkbox>
-                  <v-checkbox v-if="isCurrencySetUp('ltc')" v-model="acceptCryptos" value="LTC" color="grey" label="LTC"></v-checkbox>
+                  <v-checkbox v-for="item in supportedCurrencies" :key="item.currencyCode" v-model="acceptCryptos" :value="item.currencyCode" color="orange" :label="item.currencyCode"></v-checkbox>
                 </v-layout>
                 <v-layout row wrap>
                   <!--<v-checkbox :disabled="true" color="blue darken-3" label="ETH"></v-checkbox>
@@ -109,6 +108,7 @@ export default {
       newInvoice: {},
       uploadedFile: null,
       uploadedFileName: '',
+      supportedCurrencies: this.$store.getters.supportedCurrencies,
       rules: {
         email: (value) => {
           const pattern = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
@@ -193,6 +193,7 @@ export default {
           Accept: this.acceptCryptos,
           Recipient: this.newInvoice.recipient
         };
+
         // Send with file
         if (this.uploadedFile) {
           payload.FileName = this.uploadedFile.name;

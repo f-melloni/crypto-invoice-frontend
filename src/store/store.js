@@ -22,7 +22,8 @@ export default new Vuex.Store({
     },
     invoices: [],
     errorOnSave: false,
-    errorMessage: ''
+    errorMessage: '',
+    supportedCurrencies: []
   },
   getters: {
     unlogged: state => state.unlogged,
@@ -32,9 +33,15 @@ export default new Vuex.Store({
     userSettings: state => state.userSettings,
     userId: state => state.userId,
     errorOnSave: state => state.errorOnSave,
-    errorMessage: state => state.errorMessage
+    errorMessage: state => state.errorMessage,
+    supportedCurrencies: state => state.supportedCurrencies
   },
   mutations: {
+    loadSupportedCurrencies: (state, payload) => {
+      payload.forEach(currency => {
+          state.supportedCurrencies.push(currency);
+      });
+    },
     getInvoice: (state, payload) => {
       state.invoices.push(payload);
     },
@@ -109,6 +116,7 @@ export default new Vuex.Store({
         commit('setUserId', data.userId);
         commit('setDisplayName', data.displayName);
         commit('loadInvoices', data.invoiceList);
+        commit('loadSupportedCurrencies', data.supportCurrencies);
         axios.get(connectionString + '/api/user-settings/' + data.userId, {
           withCredentials: true
         }).then((response) => {
@@ -162,15 +170,6 @@ export default new Vuex.Store({
         if (error.response.status === 401) {
           window.location.replace(connectionString + '/Account/Login/');
         }
-      });
-    },
-    deleteInvoiceAction: ({ commit, state }, payload) => {
-      axios.delete(connectionString + '/api/invoice/' + payload, {
-        withCredentials: true
-      }).then(() => {
-        commit('deleteInvoice', payload);
-      }).catch(function (error) {
-        console.error(error);
       });
     }
   }
