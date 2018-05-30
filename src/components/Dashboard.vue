@@ -65,8 +65,8 @@
         >
           <template slot="items" slot-scope="props">
             <td class="text-xs-left pr-0">
-              <v-avatar size="24px" :color="props.item.state | avatarColor">
-                <v-icon size="20px" dark>{{ props.item.state | stateIcon }}</v-icon>
+              <v-avatar size="30px" :color="props.item.state | avatarColor">
+                <v-icon size="22px" dark>{{ props.item.state | stateIcon }}</v-icon>
               </v-avatar>
             </td>
             <td class="text-xs-left">{{ props.item.name }}</td>
