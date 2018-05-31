@@ -31,15 +31,11 @@
         </v-card>
       </v-flex>
     </v-layout>
-
     <v-layout row wrap justify-center><!--Crypto Cards-->
       <v-flex xs12 md12 lg6>
         <v-layout row wrap>
-          <v-flex xs12 md12 lg6 v-if="invoice.acceptBTC">
-            <crypto-card v-if="renderCryptoCard('btc')" currencyCode="btc" color="orange" :invoice="invoice"></crypto-card>
-          </v-flex>
-          <v-flex xs12 md12 lg6 v-if="invoice.acceptLTC">
-            <crypto-card  v-if="renderCryptoCard('ltc')" currencyCode="ltc" color="grey" :invoice="invoice"></crypto-card>
+          <v-flex xs12 md12 lg6 v-for="item in supportedCurrencies" :key="item.currencyCode" v-if="invoice['accept' + item.currencyCode]">
+            <crypto-card v-if="renderCryptoCard(item.currencyCode)" :currencyCode="item.currencyCode" color="orange" :invoice="invoice"></crypto-card>
           </v-flex>
         </v-layout>
       </v-flex>
@@ -60,6 +56,7 @@ export default {
   props: ['invoiceGuid'],
   data () {
     return {
+      supportedCurrencies: this.$store.getters.supportedCurrencies,
       invoice: {}
     }
   },
@@ -95,6 +92,13 @@ export default {
     },
     dateReceived () {
       return this.invoice.dateReceived === null ? ' ' : this.invoice.dateReceived;
+    },
+    explorerUrl () {
+      var list = {};
+      this.supportedCurrencies.forEach(element => {
+        list[element.currencyCode] = element.blockExplorerUrl
+      });
+      return list;
     }
   },
   methods: {
@@ -112,14 +116,7 @@ export default {
     },
     // redirect to blockchain explorer
     viewTransaction (currency) {
-      switch (currency.toLowerCase()) {
-        case 'btc':
-          window.location.replace('https://live.blockcypher.com/btc/tx/' + this.invoice.transactionId);
-          break;
-        case 'ltc':
-          window.location.replace('https://live.blockcypher.com/ltc/tx/' + this.invoice.transactionId);
-          break;
-      }
+      window.location.replace(this.explorerUrl[currency] + this.invoice.transactionId);
     },
     renderTransaction (currency) {
       return this.invoice.transactionCurrencyCode ? this.invoice.transactionCurrencyCode.toLowerCase() === currency.toLowerCase() : false;
