@@ -32,9 +32,9 @@ export default{
   template: '<crypto-card/>',
   name: 'CryptoCard',
   props: ['currencyCode', 'color', 'invoice'],
-  data: function () {
+  data () {
     return {
-
+      supportedCurrencies: this.$store.getters.supportedCurrencies
     }
   },
   computed: {
@@ -64,19 +64,19 @@ export default{
           break;
       }
       return uri;
+    },
+    explorerUrl () {
+      var list = {};
+      this.supportedCurrencies.forEach(element => {
+        list[element.currencyCode] = element.blockExplorerUrl
+      });
+      return list;
     }
   },
   methods: {
     // redirect to blockchain explorer
     viewTransaction () {
-      switch (this.currencyCode.toLowerCase()) {
-        case 'btc':
-          window.location.replace('https://live.blockcypher.com/btc/tx/' + this.invoice.transactionId);
-          break;
-        case 'ltc':
-          window.location.replace('https://live.blockcypher.com/ltc/tx/' + this.invoice.transactionId);
-          break;
-      }
+      window.location.replace(this.explorerUrl[this.currencyCode.toUpperCase()] + this.invoice.transactionId);
     },
     renderTransaction () {
       return this.invoice.transactionCurrencyCode ? this.invoice.transactionCurrencyCode.toLowerCase() === this.currencyCode.toLowerCase() : false;

@@ -39,7 +39,7 @@
               <v-card-title><h2>Cryptocurrencies</h2></v-card-title>
               <v-card-text>
                 <v-layout row wrap>
-                  <v-checkbox v-for="item in supportedCurrencies" :key="item.currencyCode" v-model="acceptCryptos" :value="item.currencyCode" color="orange" :label="item.currencyCode"></v-checkbox>
+                  <v-checkbox v-for="item in supportedCurrencies" v-if="isCurrencySetUp(item.currencyCode)" :key="item.currencyCode" v-model="acceptCryptos" :value="item.currencyCode" color="orange" :label="item.currencyCode"></v-checkbox>
                 </v-layout>
                 <v-layout row wrap>
                   <!--<v-checkbox :disabled="true" color="blue darken-3" label="ETH"></v-checkbox>
