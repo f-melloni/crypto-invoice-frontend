@@ -113,20 +113,29 @@ export default new Vuex.Store({
       axios.get(connectionString + '/api/invoices/init', {
         withCredentials: true
       }).then(({ status, data }) => {
-        commit('setUserId', data.userId);
-        commit('setDisplayName', data.displayName);
-        commit('loadInvoices', data.invoiceList);
         commit('loadSupportedCurrencies', data.supportCurrencies);
-        axios.get(connectionString + '/api/user-settings/' + data.userId, {
-          withCredentials: true
-        }).then((response) => {
-          commit('setUserSettings', response.data);
-        }).catch(function (error) {
-          console.log(error);
-          if (error.response.status === 401) {
+
+        if (data.userId !== null) {
+          commit('setUserId', data.userId);
+          commit('setDisplayName', data.displayName);
+          commit('loadInvoices', data.invoiceList);
+
+          axios.get(connectionString + '/api/user-settings/' + data.userId, {
+            withCredentials: true
+          }).then((response) => {
+            commit('setUserSettings', response.data);
+          }).catch(function (error) {
+            console.log(error);
+            if (error.response.status === 401) {
+              window.location.replace(connectionString + '/Account/Login/');
+            }
+          });
+        } else {
+          if (!window.location.pathname.includes('invoice')) {
             window.location.replace(connectionString + '/Account/Login/');
           }
-        });
+          commit('unlogged', true);
+        }
       }).catch((error) => {
         commit('unlogged', true);
         if (error.response.status === 401 && !window.location.pathname.includes('invoice')) {

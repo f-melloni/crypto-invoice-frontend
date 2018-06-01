@@ -1,5 +1,5 @@
 <template>
-  <v-container fluid grid-list-sm>
+  <v-container fluid grid-list-sm v-if="invoice">
     <v-layout row wrap justify-center><!--Top card-->
       <v-flex xs12 md12 lg6>
         <v-card>

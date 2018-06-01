@@ -117,6 +117,7 @@
 
 <script>
 // import moment from 'moment';
+import { connectionString } from '@/appSettings.json';
 
 export default {
   name: 'Dashboard',
@@ -135,6 +136,11 @@ export default {
       deletedItem: {},
       deleteDialog: false
     };
+  },
+  created () {
+    if (this.$store.getters.unlogged === true) {
+      window.location.replace(connectionString + '/Account/Login/');
+    }
   },
   /* mounted () {
     // load invoices and stop loading visuals
