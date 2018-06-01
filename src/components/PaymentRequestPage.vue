@@ -10,11 +10,11 @@
           </v-card-title>
           <v-card-text>
             <v-layout row wrap>
-              <v-flex xs12 lg6>
+              <v-flex xs12 md6 lg6>
                 <v-text-field required label="Invoice Name" v-model="newInvoice.name" :rules="[rules.notEmpty]"></v-text-field>
                 <v-text-field required label="Mail of Recipient" v-model="newInvoice.recipient" :rules="[rules.notEmpty, rules.email]"></v-text-field>
               </v-flex>
-              <v-flex xs12 lg6>
+              <v-flex xs12 md6 lg6>
                 <v-text-field required label="Payment Amount in Fiat" v-model="newInvoice.fiatAmount" :rules="[rules.notEmpty, rules.amount]"></v-text-field>
                 <v-select required label="Select Fiat Currency" :items="fiatCurrencies" v-model="newInvoice.fiatCurrencyCode" :rules="[rules.notEmpty]"></v-select>
               </v-flex>
@@ -66,7 +66,7 @@
     <v-layout row wrap justify-center>
       <v-flex xs12 md12 lg6>
         <v-layout>
-          <v-flex xs12 md8 lg4 align-content-center>
+          <v-flex xs12 md4 lg6 align-content-center>
             <v-card>
               <v-card-text>
                 <v-layout row>

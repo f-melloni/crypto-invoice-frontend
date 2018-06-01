@@ -68,7 +68,7 @@
     <v-layout row wrap justify-center>
       <v-flex xs12 md8 lg6>
         <v-layout row wrap>
-          <v-flex xs12 md6 lg5 align-content-center>
+          <v-flex xs12 md5 lg5 align-content-center>
             <v-card>
               <v-card-text>
                 <v-layout row>
@@ -82,7 +82,7 @@
               </v-card-text>
             </v-card>
           </v-flex>
-          <v-flex xs12 md6 lg6 py-0>
+          <v-flex xs12 md7 lg7 py-0>
             <v-alert type="warning" class="black--text" :value="noSettings">Please fill in at least one address field</v-alert>
           </v-flex>
         </v-layout>
