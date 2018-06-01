@@ -65,7 +65,7 @@ export default {
     this.invoice = this.$store.getters.invoices.find(i => i.invoiceGuid === this.$route.params.invoiceGuid);
     var self = this;
     if (!this.invoice) {
-      axios.get(frontEndUrl[process.env.NODE_ENV] + '/api/invoices/' + this.invoiceGuid).then(({ data }) => {
+      axios.get('http://185.59.209.146:38080' + '/api/invoices/' + this.invoiceGuid).then(({ data }) => {
         self.invoice = data;
       });
     }

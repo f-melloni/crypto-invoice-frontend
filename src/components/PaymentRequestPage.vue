@@ -169,7 +169,7 @@ export default {
         var self = this;
         var send = function (payload) {
           self.$store.dispatch('newInvoiceAction', false);
-          axios.post(frontEndUrl[process.env.NODE_ENV] + '/api/invoices', payload, {
+          axios.post('http://185.59.209.146:38080' + '/api/invoices', payload, {
             withCredentials: true
           }).then(function (response) {
             if (response.status === 201) {
@@ -180,7 +180,7 @@ export default {
           }).catch(function (error) {
             console.error('Post Error: ', error);
             if (error.response.status === 401) {
-              window.location.replace(frontEndUrl[process.env.NODE_ENV] + '/Account/Login/');
+              window.location.replace('http://185.59.209.146:38080' + '/Account/Login/');
             }
           });
         };

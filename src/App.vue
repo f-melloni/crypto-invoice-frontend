@@ -53,9 +53,9 @@ export default {
     }
   },
   created () {
-    if (process.env.NODE_ENV === 'development') {
+    /* if (process.env.NODE_ENV === 'development') {
       console.log('Running development instance!');
-    }
+    } */
   }
 }
 </script>
