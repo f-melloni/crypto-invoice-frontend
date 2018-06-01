@@ -140,7 +140,7 @@ export default {
   },
   created () {
     if (this.$store.getters.unlogged === true) {
-      window.location.replace('http://185.59.209.146:38080' + '/Account/Login/');
+      window.location.replace(frontEndUrl[process.env.NODE_ENV] + '/Account/Login/');
     }
   },
   computed: {

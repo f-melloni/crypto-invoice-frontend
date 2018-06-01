@@ -11,8 +11,8 @@ export default {
     return {}
   },
   created () {
-    axios.get('http://185.59.209.146:38080' + '/Account/Logout', {withCredentials: true}).then(() => {
-      window.location.replace('http://185.59.209.146:38080' + '/Account/Login/');
+    axios.get(frontEndUrl[process.env.NODE_ENV] + '/Account/Logout', {withCredentials: true}).then(() => {
+      window.location.replace(frontEndUrl[process.env.NODE_ENV] + '/Account/Login/');
     }).catch((error) => {
       console.error(error);
     });
