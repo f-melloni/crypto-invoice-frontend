@@ -4,19 +4,15 @@
 
 <script>
 import axios from 'axios';
-import { connectionString } from '@/appSettings.json';
+import { frontEndUrl } from '@/appSettings.json';
 export default {
   name: 'Logout',
   data () {
     return {}
   },
   created () {
-    axios.get(connectionString + '/Account/Logout', {withCredentials: true}).then(() => {
-      if (process.env.NODE_ENV === 'development') {
-        window.location.replace(connectionString + '/Account/Login/');
-      } else {
-        this.$router.push('/Account/Login');
-      }
+    axios.get(frontEndUrl[process.env.NODE_ENV] + '/Account/Logout', {withCredentials: true}).then(() => {
+      window.location.replace(frontEndUrl[process.env.NODE_ENV] + '/Account/Login/');
     }).catch((error) => {
       console.error(error);
     });

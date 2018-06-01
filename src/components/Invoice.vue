@@ -45,7 +45,7 @@
 
 <script>
 import utils from '@/utils.js';
-import { connectionString } from '@/appSettings.json';
+import { frontEndUrl } from '@/appSettings.json';
 import axios from 'axios';
 import CryptoCard from '@/components/CryptoCard';
 export default {
@@ -65,7 +65,7 @@ export default {
     this.invoice = this.$store.getters.invoices.find(i => i.invoiceGuid === this.$route.params.invoiceGuid);
     var self = this;
     if (!this.invoice) {
-      axios.get(connectionString + '/api/invoices/' + this.invoiceGuid).then(({ data }) => {
+      axios.get(frontEndUrl[process.env.NODE_ENV] + '/api/invoices/' + this.invoiceGuid).then(({ data }) => {
         self.invoice = data;
       });
     }

@@ -2,7 +2,7 @@
 import Vuex from 'vuex';
 import Vue from 'vue';
 import axios from 'axios';
-import { connectionString } from '@/appSettings.json';
+import { frontEndUrl } from '@/appSettings.json';
 
 Vue.use(Vuex);
 export default new Vuex.Store({
@@ -98,19 +98,28 @@ export default new Vuex.Store({
       commit('settingsChanged', payload);
     },
     getInvoiceAction: ({ commit }, payload) => {
-      axios.get(connectionString + '/api/invoices/' + payload, {
+      axios.get(frontEndUrl[process.env.NODE_ENV] + '/api/invoices/' + payload, {
         withCredentials: true
       }).then(function (response) {
         commit('getInvoice', response.data);
       }).catch(function (error) {
         console.error(error);
         if (error.response.status === 401) {
-          window.location.replace(connectionString + '/Account/Login/');
+          window.location.replace(frontEndUrl[process.env.NODE_ENV] + '/Account/Login/');
         }
       });
     },
+    deleteInvoiceAction: ({ commit, state }, payload) => {
+      axios.delete(frontEndUrl[process.env.NODE_ENV] + '/api/invoice/' + payload, {
+        withCredentials: true
+      }).then(() => {
+        commit('deleteInvoice', payload);
+      }).catch(function (error) {
+        console.error(error);
+      });
+    },
     initStore: ({ commit }) => {
-      axios.get(connectionString + '/api/invoices/init', {
+      axios.get(frontEndUrl[process.env.NODE_ENV] + '/api/invoices/init', {
         withCredentials: true
       }).then(({ status, data }) => {
         commit('loadSupportedCurrencies', data.supportCurrencies);
@@ -120,26 +129,26 @@ export default new Vuex.Store({
           commit('setDisplayName', data.displayName);
           commit('loadInvoices', data.invoiceList);
 
-          axios.get(connectionString + '/api/user-settings/' + data.userId, {
+          axios.get(frontEndUrl[process.env.NODE_ENV] + '/api/user-settings/' + data.userId, {
             withCredentials: true
           }).then((response) => {
             commit('setUserSettings', response.data);
           }).catch(function (error) {
             console.log(error);
             if (error.response.status === 401) {
-              window.location.replace(connectionString + '/Account/Login/');
+              window.location.replace(frontEndUrl[process.env.NODE_ENV] + '/Account/Login/');
             }
           });
         } else {
           if (!window.location.pathname.includes('invoice')) {
-            window.location.replace(connectionString + '/Account/Login/');
+            window.location.replace(frontEndUrl[process.env.NODE_ENV] + '/Account/Login/');
           }
           commit('unlogged', true);
         }
       }).catch((error) => {
         commit('unlogged', true);
         if (error.response.status === 401 && !window.location.pathname.includes('invoice')) {
-          window.location.replace(connectionString + '/Account/Login/');
+          window.location.replace(frontEndUrl[process.env.NODE_ENV] + '/Account/Login/');
         }
         commit('errorOnSave', true);
         commit('errorMessage', error.message);
@@ -152,7 +161,7 @@ export default new Vuex.Store({
       commit('setDisplayName', payload);
     },
     setUserSettingsAction: ({ commit, state }, payload) => {
-      axios.put(connectionString + '/api/user-settings/' + state.userId, {
+      axios.put(frontEndUrl[process.env.NODE_ENV] + '/api/user-settings/' + state.userId, {
         btcxpub: payload.btcxpub,
         ltcxpub: payload.ltcxpub,
         ethAccount: payload.ethAccount,
@@ -177,7 +186,7 @@ export default new Vuex.Store({
           commit('errorMessage', error.message);
         }
         if (error.response.status === 401) {
-          window.location.replace(connectionString + '/Account/Login/');
+          window.location.replace(frontEndUrl[process.env.NODE_ENV] + '/Account/Login/');
         }
       });
     }

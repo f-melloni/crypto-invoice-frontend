@@ -97,7 +97,7 @@
 
 <script>
 import axios from 'axios';
-import { connectionString } from '@/appSettings.json';
+import { frontEndUrl } from '@/appSettings.json';
 export default {
   name: 'PaymentRequestPage',
   data () {
@@ -169,7 +169,7 @@ export default {
         var self = this;
         var send = function (payload) {
           self.$store.dispatch('newInvoiceAction', false);
-          axios.post(connectionString + '/api/invoices', payload, {
+          axios.post(frontEndUrl[process.env.NODE_ENV] + '/api/invoices', payload, {
             withCredentials: true
           }).then(function (response) {
             if (response.status === 201) {
@@ -180,7 +180,7 @@ export default {
           }).catch(function (error) {
             console.error('Post Error: ', error);
             if (error.response.status === 401) {
-              window.location.replace(connectionString + '/Account/Login/');
+              window.location.replace(frontEndUrl[process.env.NODE_ENV] + '/Account/Login/');
             }
           });
         };

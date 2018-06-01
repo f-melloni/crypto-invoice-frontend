@@ -63,6 +63,7 @@
         item-key="invoiceGuid"
         :loading="isLoading"
         >
+          <v-progress-linear slot="progress" color="blue" indeterminate></v-progress-linear>
           <template slot="items" slot-scope="props">
             <td class="text-xs-left pr-0">
               <v-avatar size="30px" :color="props.item.state | avatarColor">
@@ -86,7 +87,7 @@
             </td>
           </template>
           <template slot="no-data">
-            <div>Loading your invoices...</div>
+            <div>You does not have any invoice yet...</div>
           </template>
         </v-data-table>
       </v-flex>
@@ -117,7 +118,7 @@
 
 <script>
 // import moment from 'moment';
-import { connectionString } from '@/appSettings.json';
+import { frontEndUrl } from '@/appSettings.json';
 
 export default {
   name: 'Dashboard',
@@ -139,29 +140,9 @@ export default {
   },
   created () {
     if (this.$store.getters.unlogged === true) {
-      window.location.replace(connectionString + '/Account/Login/');
+      window.location.replace(frontEndUrl[process.env.NODE_ENV] + '/Account/Login/');
     }
   },
-  /* mounted () {
-    // load invoices and stop loading visuals
-    var invoices = this.$store.getters.invoices;
-    invoices.forEach((invoice) => {
-      let accepting = [];
-      invoice.accepting = '';
-      if (invoice.acceptBTC) {
-        accepting.push('BTC');
-      }
-      if (invoice.acceptLTC) {
-        accepting.push('LTC');
-      }
-      for (let code of accepting) {
-        invoice.accepting += code + ', ';
-      }
-      invoice.accepting = invoice.accepting.slice(0, -2);
-    });
-    this.invoices = invoices;
-    this.isLoading = false;
-  }, */
   computed: {
     errorOnSave: {
       get () {
@@ -192,19 +173,17 @@ export default {
     },
     invoices () {
       var invoices = this.$store.getters.invoices;
+
       invoices.forEach((invoice) => {
         let accepting = [];
         invoice.accepting = '';
-        if (invoice.acceptBTC) {
-          accepting.push('BTC');
-        }
-        if (invoice.acceptLTC) {
-          accepting.push('LTC');
-        }
-        for (let code of accepting) {
-          invoice.accepting += code + ', ';
-        }
-        invoice.accepting = invoice.accepting.slice(0, -2);
+        this.$store.getters.supportedCurrencies.forEach((currency) => {
+          if (invoice['accept' + currency.currencyCode]) {
+            accepting.push(currency.currencyCode);
+          }
+        });
+
+        invoice.accepting = accepting.join(', ');
       });
       return invoices;
     },
