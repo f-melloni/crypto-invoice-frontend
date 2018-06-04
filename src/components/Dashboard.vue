@@ -38,12 +38,26 @@
                 <v-divider></v-divider>
                 <v-list-tile>
                   <v-list-tile-content>Payment Amount:</v-list-tile-content>
-                  <v-list-tile-content class="align-end">{{ props.item.atAmount + ' ' + props.item.atCurrencyCode }}</v-list-tile-content>
+                  <v-list-tile-content class="align-end">{{ props.item.fiatAmount + ' ' + props.item.fiatCurrencyCode }}</v-list-tile-content>
                 </v-list-tile>
                 <v-divider></v-divider>
                 <v-list-tile>
                   <v-list-tile-content>Date Created</v-list-tile-content>
                   <v-list-tile-content class="align-end">{{ props.item.dateCreated | formatDate }}</v-list-tile-content>
+                </v-list-tile>
+                <v-divider></v-divider>
+                <v-list-tile>
+                  <v-list-tile-content>Actions</v-list-tile-content>
+                  <v-list-tile-content class="align-end">
+                    <v-layout row>
+                      <v-btn icon class="mx-0 mr-1" @click="viewInvoice(props.item)">
+                        <v-icon color="teal">search</v-icon>
+                      </v-btn>
+                      <v-btn icon class="mx-0 mr-1" @click="deleteItem(props.item)">
+                        <v-icon color="red">delete</v-icon>
+                      </v-btn>
+                    </v-layout>
+                  </v-list-tile-content>
                 </v-list-tile>
               </v-list>
             </v-card>
@@ -65,7 +79,7 @@
         >
           <v-progress-linear slot="progress" color="blue" indeterminate></v-progress-linear>
           <template slot="items" slot-scope="props">
-            <td class="text-xs-left pr-0">
+            <td class="pr-0 pl-3">
               <v-avatar size="30px" :color="props.item.state | avatarColor">
                 <v-icon size="22px" dark>{{ props.item.state | stateIcon }}</v-icon>
               </v-avatar>
@@ -126,7 +140,7 @@ export default {
     return {
       isLoading: false,
       headers: [
-        {value: 'state', align: 'left', class: 'pr-0', width: '40px'},
+        {value: 'state', align: 'center', class: 'pr-0 pl-3', width: '40px'},
         {text: 'Invoice Name', value: 'name', align: 'left'},
         {text: 'Amount', value: 'atAmount', align: 'right'},
         {text: 'Accepting', value: 'accepting', class: 'pr-0', width: '140px'},
