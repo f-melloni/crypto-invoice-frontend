@@ -39,7 +39,7 @@
               <v-card-title><h2>Cryptocurrencies</h2></v-card-title>
               <v-card-text>
                 <v-layout row wrap>
-                  <v-checkbox v-for="item in supportedCurrencies" v-if="isCurrencySetUp(item.currencyCode)" :key="item.currencyCode" v-model="acceptCryptos" :value="item.currencyCode" color="orange" :label="item.currencyCode"></v-checkbox>
+                  <v-checkbox v-for="item in supportedCurrencies" v-if="isCurrencySetUp(item.currencyCode)" :key="item.currencyCode" v-model="acceptCryptos" :value="item.currencyCode" :color="item.color" :label="item.currencyCode"></v-checkbox>
                 </v-layout>
                 <v-layout row wrap>
                   <!--<v-checkbox :disabled="true" color="blue darken-3" label="ETH"></v-checkbox>
@@ -105,7 +105,12 @@ export default {
       atLeastOneCheckboxAlert: false,
       acceptCryptos: [],
       valid: false,
-      newInvoice: {},
+      newInvoice: {
+        name: 'Test get address #',
+        recipient: 'mnvk83@gmail.com',
+        fiatAmount: 100,
+        fiatCurrencyCode: 'EUR'
+      },
       uploadedFile: null,
       uploadedFileName: '',
       supportedCurrencies: this.$store.getters.supportedCurrencies,

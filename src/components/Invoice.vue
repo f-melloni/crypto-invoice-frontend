@@ -35,7 +35,7 @@
       <v-flex xs12 md12 lg6>
         <v-layout row wrap>
           <v-flex xs12 md12 lg6 v-for="item in supportedCurrencies" :key="item.currencyCode" v-if="invoice['accept' + item.currencyCode]">
-            <crypto-card v-if="renderCryptoCard(item.currencyCode)" :currencyCode="item.currencyCode" color="orange" :invoice="invoice"></crypto-card>
+            <crypto-card v-if="renderCryptoCard(item.currencyCode)" :currencyCode="item.currencyCode" :color="item.color" :invoice="invoice"></crypto-card>
           </v-flex>
         </v-layout>
       </v-flex>
