@@ -211,6 +211,6 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style>
   .table__overflow {
-    overflow: hidden;
+    overflow: hidden !important;
   }
 </style>
