@@ -34,3 +34,17 @@ Vue.filter('avatarColor', state => {
   ]
   return avatarColors[state];
 });
+
+Vue.filter('cryptoCheckColor', cc => {
+  var cryptoColors = {
+    BTC: 'orange',
+    LTC: 'grey',
+    ETH: 'blue',
+    XMR: 'purple'
+  };
+  if (cryptoColors[cc.toUpperCase()]) {
+    return cryptoColors[cc.toUpperCase()];
+  } else {
+    return 'primary';
+  }
+});
