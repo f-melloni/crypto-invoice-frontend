@@ -105,12 +105,7 @@ export default {
       atLeastOneCheckboxAlert: false,
       acceptCryptos: [],
       valid: false,
-      newInvoice: {
-        name: 'Test get address #',
-        recipient: 'mnvk83@gmail.com',
-        fiatAmount: 100,
-        fiatCurrencyCode: 'EUR'
-      },
+      newInvoice: {},
       uploadedFile: null,
       uploadedFileName: '',
       supportedCurrencies: this.$store.getters.supportedCurrencies,
