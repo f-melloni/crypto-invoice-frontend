@@ -9,8 +9,8 @@ Vue.filter('formatState', state => {
   var paymentStates = [
     'Unknown', // should not be possible to get; reason: webapi starts this enum from 1
     'Pending',
-    'Waiting for Confirmation',
-    'Received and Confirmed'
+    'Unconfirmed',
+    'Confirmed'
   ];
   return paymentStates[state];
 });
