@@ -71,7 +71,7 @@
               <v-card-text>
                 <v-layout row>
                   <v-flex>
-                    <v-btn @click="submit" :disabled="!valid" color="primary">Create</v-btn>
+                    <v-btn @click="submit" :loading="loading" :disabled="!valid" color="primary">Create</v-btn>
                   </v-flex>
                   <v-flex>
                     <v-btn @click="reset" color="primary">Clear</v-btn>
@@ -92,6 +92,10 @@
       </v-flex>
     </v-layout>
     </v-form>
+    <v-snackbar top color="error" v-model="showError">
+      Something happened: {{ errorMessage }}
+      <v-btn flat @click="showError = false">Close</v-btn>
+    </v-snackbar>
   </v-container>
 </template>
 
@@ -102,6 +106,9 @@ export default {
   name: 'PaymentRequestPage',
   data () {
     return {
+      loading: false,
+      showError: false,
+      errorMessage: '',
       atLeastOneCheckboxAlert: false,
       acceptCryptos: [],
       valid: false,
@@ -158,6 +165,7 @@ export default {
       this.$refs.form.reset();
     },
     submit () {
+      this.loading = true;
       if (this.acceptCryptos.length === 0) {
         this.atLeastOneCheckboxAlert = true;
         this.valid = false;
@@ -181,6 +189,10 @@ export default {
             console.error('Post Error: ', error);
             if (error.response.status === 401) {
               window.location.replace(frontEndUrl[process.env.NODE_ENV] + '/Account/Login/');
+            } else {
+              // show snackbar
+              this.showError = true;
+              this.errorMessage = error.message;
             }
           });
         };
@@ -210,6 +222,7 @@ export default {
         } else { // Send without file
           send(payload);
         }
+        this.loading = false;
       }
     }
   }
