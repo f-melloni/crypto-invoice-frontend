@@ -93,7 +93,7 @@
     </v-layout>
     </v-form>
     <v-snackbar top color="error" v-model="showError">
-      Something happened: {{ errorMessage }}
+      Something went wrong: {{ errorMessage }}
       <v-btn flat @click="showError = false">Close</v-btn>
     </v-snackbar>
   </v-container>
@@ -186,13 +186,12 @@ export default {
               self.$router.push({name: 'Dashboard'});
             }
           }).catch(function (error) {
-            console.error('Post Error: ', error);
             if (error.response.status === 401) {
               window.location.replace(frontEndUrl[process.env.NODE_ENV] + '/Account/Login/');
             } else {
               // show snackbar
-              this.showError = true;
-              this.errorMessage = error.message;
+              self.showError = true;
+              self.errorMessage = 'Please try again later...';
             }
           });
         };

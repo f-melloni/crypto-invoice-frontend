@@ -124,7 +124,7 @@
       Settings successfully changed!
     </v-snackbar>
     <v-snackbar top color="error" v-model="errorOnSave">
-      Something happened: {{ errorMessage }}
+      Something went wrong: {{ errorMessage }}
       <v-btn flat @click="errorOnSave = false">Close</v-btn>
     </v-snackbar>
   </v-container>
