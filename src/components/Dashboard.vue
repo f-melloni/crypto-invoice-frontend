@@ -101,7 +101,7 @@
             </td>
           </template>
           <template slot="no-data">
-            <div>You does not have any invoice yet...</div>
+            <div>You do not have any invoice yet...</div>
           </template>
         </v-data-table>
       </v-flex>
