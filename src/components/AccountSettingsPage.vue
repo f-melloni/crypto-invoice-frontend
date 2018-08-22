@@ -100,7 +100,7 @@ export default {
       savedDialog: false,
       userSettings: {},
       xpubRules: [
-        v => (v === '' || (v.length === 111 && v.startsWith('xpub'))) || 'Invalid XPUB format'
+        v => (v === '' || (v.length === 111 && (v.startsWith('xpub') || v.startsWith('ypub')))) || 'Invalid XPUB format'
       ],
       ethRules: [
         v => (v === '' || v.length === 42) || 'Invalid address length',
