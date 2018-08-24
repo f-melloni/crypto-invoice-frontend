@@ -18,6 +18,10 @@
                 <v-text-field required label="Payment Amount in Fiat" v-model="newInvoice.fiatAmount" :rules="[rules.notEmpty, rules.amount]"></v-text-field>
                 <v-select required label="Select Fiat Currency" :items="fiatCurrencies" v-model="newInvoice.fiatCurrencyCode" :rules="[rules.notEmpty]"></v-select>
               </v-flex>
+              <v-flex xs12 md6 lg6>
+                <v-select required label="Exchange rate calculation" :items="exchangeRateModes" v-model="newInvoice.exchangeRateMode" :rules="[rules.notEmpty]"></v-select>
+              </v-flex>
+              <v-flex xs12 md6 lg6></v-flex>
               <v-flex>
                 <v-text-field xs12 multi-line label="Description" v-model="newInvoice.description"></v-text-field>
               </v-flex>
@@ -139,9 +143,8 @@ export default {
     }
   },
   computed: {
-    fiatCurrencies () {
-      return ['USD', 'EUR', 'CZK'];
-    },
+    fiatCurrencies: () => ['USD', 'EUR', 'CZK'],
+    exchangeRateModes: () => ['At invoice creation', 'At the time of payment'],
     noSettings () {
       return !this.isCurrencySetUp('btc') && !this.isCurrencySetUp('ltc');
     }
@@ -196,11 +199,14 @@ export default {
           });
         };
 
+        const exchangeRateMode = this.newInvoice.exchangeRateMode === 'At invoice creation' ? 'invoice' : 'payment';
+
         var payload = {
           Name: this.newInvoice.name,
           Description: this.newInvoice.description,
           FiatAmount: this.newInvoice.fiatAmount,
           FiatCurrencyCode: this.newInvoice.fiatCurrencyCode,
+          ExchangeRateMode: exchangeRateMode,
           Accept: this.acceptCryptos,
           Recipient: this.newInvoice.recipient
         };
