@@ -98,7 +98,7 @@ export default new Vuex.Store({
       commit('settingsChanged', payload);
     },
     getInvoiceAction: ({ commit }, payload) => {
-      axios.get(frontEndUrl[process.env.NODE_ENV] + '/api/invoices/' + payload, {
+      axios.get(frontEndUrl[process.env.NODE_ENV] + '/api/invoices/' + payload + '?no_update=true', {
         withCredentials: true
       }).then(function (response) {
         commit('getInvoice', response.data);
