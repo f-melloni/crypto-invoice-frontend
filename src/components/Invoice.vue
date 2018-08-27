@@ -71,7 +71,7 @@ export default {
     }
     const thisGuid = this.invoiceGuid;
     setInterval(
-      function() {
+      function () {
         axios.get(frontEndUrl[process.env.NODE_ENV] + '/api/invoices/' + thisGuid).then(({ data }) => {
           self.invoice = data;
         });
