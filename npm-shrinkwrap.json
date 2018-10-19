@@ -177,7 +177,7 @@
       "resolved": "https://registry.npmjs.org/@xkeshi/vue-qrcode/-/vue-qrcode-0.3.0.tgz",
       "integrity": "sha512-Kv+jQ38I/ipxsGgutHluVDBR5Rk4ePKqShi5c21/E0AQNUQzXV6rZTtCWE+4RQQqyxcc062YZSrN/cksWHES6A==",
       "requires": {
-        "qrious": "^4.0.2"
+        "qrious": "4.0.2"
       }
     },
     "abab": {
@@ -2563,8 +2563,8 @@
       "resolved": "https://registry.npmjs.org/cookies/-/cookies-0.7.1.tgz",
       "integrity": "sha1-fIphX1SBxhq58WyDNzG8uPZjuZs=",
       "requires": {
-        "depd": "~1.1.1",
-        "keygrip": "~1.0.2"
+        "depd": "1.1.1",
+        "keygrip": "1.0.2"
       }
     },
     "copy-concurrently": {
